@@ -9,11 +9,13 @@ vector<int> adj[102];
 int visited[102];
 int n;
 
-int dfs(int a){
+int dfs(int idx){
+    
     int cnt = 1;
-    visited[a] = 1;
-    for(int i = 0; i < adj[a].size(); i++){
-        int nxt = adj[a][i];
+    visited[idx] = 1;
+    
+    for(int i = 0; i < adj[idx].size(); i++){
+        int nxt = adj[idx][i];
         if(!visited[nxt]){
             cnt += dfs(nxt);
         }
@@ -23,6 +25,7 @@ int dfs(int a){
 }
 
 int solution(int N, vector<vector<int>> wires) {
+    ios_base::sync_with_stdio(false);
     int answer = 1000000000;
     n = N;
     
