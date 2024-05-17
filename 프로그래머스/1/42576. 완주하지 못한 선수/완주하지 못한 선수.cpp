@@ -1,25 +1,30 @@
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <iostream>
 using namespace std;
 
 string solution(vector<string> p, vector<string> c) {
-    string answer = "";
+    ios_base::sync_with_stdio(false);
     
-    map<string, int> m;
+    string answer = "";
+    unordered_map<string, int> m;
+    
     for(int i = 0; i < p.size(); i++){
         m[p[i]]++;
     }
     
     for(int i = 0; i < c.size(); i++){
         m[c[i]]--;
-        if(m[c[i]] == 0){
-            m.erase(m.find(c[i]));
-        }
     }
     
-    cout << m.begin() -> first;
-    answer = m.begin() -> first;
+    for(auto e : m){
+        if(e.second > 0){
+            answer = e.first;
+            break;
+        }
+        else continue;
+    }
+    
     return answer;
 }
