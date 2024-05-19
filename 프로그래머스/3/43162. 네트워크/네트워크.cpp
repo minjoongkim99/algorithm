@@ -6,20 +6,18 @@
 using namespace std;
 int n;
 int parent[203];
-
+int visited[203];
 int getParent(int a){
     if(parent[a] == a) return a;
     else return parent[a] = getParent(parent[a]);
 }
 
 void unionParent(int a, int b){
-    int x = getParent(a);
-    int y = getParent(b);
+    int x = getParent(a), y = getParent(b);
     
-    if(x != y){
-        parent[y] = x;
-    }
-  
+    if(x == y) return;
+    else if(x > y) parent[x] = y;
+    else parent[y] = x;  
 }
 
 int solution(int N, vector<vector<int>> computers) {
@@ -37,7 +35,6 @@ int solution(int N, vector<vector<int>> computers) {
     }
     
     unordered_map<int, bool> m;
-    
     for(int i = 0; i < n; i++){
         int root = getParent(i);
         if(!m[root]){
@@ -45,5 +42,7 @@ int solution(int N, vector<vector<int>> computers) {
             m[root] = true;
         }
     }
+   
+    
     return answer;
 }
