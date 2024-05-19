@@ -1,97 +1,69 @@
 #include <string>
 #include <vector>
-#include <iostream>
 #include <queue>
+#include <iostream>
 using namespace std;
-int r, c;
 int startY, startX;
+int endY, endX;
 int leverY, leverX;
-int targetY, targetX;
-int visited[102][102];
-vector<string> area;
-int dy[4] = {-1, 0, 1, 0};
-int dx[4] = {0, 1, 0, -1};
-void bfsOne(int sy, int sx){
+int visited[101][101];
+int n, m;
+int dy[] = {-1, 0, 1, 0};
+int dx[] = {0, 1, 0, -1};
+void bfs(const vector<string> &maps, int targetY, int targetX){
+    fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
+    
     queue<pair<int,int>> q;
-    q.push({sy, sx});
-    visited[sy][sx] = 1;
+    q.push({startY, startX});
+    visited[startY][startX] = 1;
     
     while(!q.empty()){
         int y = q.front().first;
         int x = q.front().second;
-        if(y == leverY && x == leverX)break;
         q.pop();
+        if(y == targetY && x == targetX) break;
         
         for(int i = 0; i < 4; i++){
             int yy = y + dy[i];
             int xx = x + dx[i];
-            if(yy < 0 || yy >= r || xx < 0 || xx >= c) continue;
+            if(yy < 0 || yy >= n || xx < 0 || xx >= m) continue;
             if(visited[yy][xx]) continue;
-            if(area[yy][xx] == 'X') continue;
-            q.push({yy, xx});
-            visited[yy][xx] = visited[y][x] + 1;
-        }  
+            if(maps[yy][xx] == 'X') continue;
+            else{
+                q.push({yy, xx});
+                visited[yy][xx] = visited[y][x] + 1;
+            }
+        }
     }
 }
-
-void bfsTwo(int sy, int sx){
-    queue<pair<int,int>> q;
-    q.push({sy, sx});
-    visited[sy][sx] = 1;
-    
-    while(!q.empty()){
-        int y = q.front().first;
-        int x = q.front().second;
-        if(y == targetY && x == targetX)break;
-        q.pop();
-        
-        for(int i = 0; i < 4; i++){
-            int yy = y + dy[i];
-            int xx = x + dx[i];
-            if(yy < 0 || yy >= r || xx < 0 || xx >= c) continue;
-            if(visited[yy][xx]) continue;
-            if(area[yy][xx] == 'X') continue;
-            q.push({yy, xx});
-            visited[yy][xx] = visited[y][x] + 1;
-        }  
-    }
-}
-
-
 int solution(vector<string> maps) {
     int answer = 0;
-    area = maps;
-    r = maps.size();
-    c = maps[0].size();
+    n = maps.size();    m = maps[0].size();
     
     for(int i = 0; i < maps.size(); i++){
         for(int j = 0; j < maps[i].size(); j++){
             if(maps[i][j] == 'S'){
-                startY = i; startX = j;
-            }
-            if(maps[i][j] == 'L'){
-                leverY = i; leverX = j;
+                startY = i;
+                startX = j;
             }
             if(maps[i][j] == 'E'){
-                targetY = i; targetX = j;
+                endY = i;
+                endX = j;
+            }
+            if(maps[i][j] == 'L'){
+                leverY = i;
+                leverX = j;
             }
         }
     }
-   
-    bfsOne(startY, startX);
-    if(visited[leverY][leverX] == 0){
-        answer = -1;
-        return answer;
-    }
-    answer = visited[leverY][leverX] - 1;
     
-    fill(&visited[0][0], &visited[0][0] + 102 * 102, 0);
+    bfs(maps, leverY, leverX);
+    if(visited[leverY][leverX] == 0) return -1;
+    else answer += visited[leverY][leverX] - 1;
     
-    bfsTwo(leverY, leverX);
-    if(visited[targetY][targetX] == 0){
-        answer = -1;
-        return answer;
-    }
-    answer += visited[targetY][targetX] - 1;
+    startY = leverY;    startX = leverX;
+    bfs(maps, endY, endX);
+    if(visited[endY][endX] == 0) return -1;
+    else answer += visited[endY][endX] - 1;
     return answer;
 }
