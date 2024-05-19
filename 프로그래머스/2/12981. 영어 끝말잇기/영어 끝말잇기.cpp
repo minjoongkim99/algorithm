@@ -1,41 +1,43 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <map>
-#include <vector>
+#include <unordered_set>
 using namespace std;
 
-vector<int> solution(int n, vector<string> w) {
-    vector<int> answer; // 번호 차례
-    map<string, int> m;
+vector<int> solution(int n, vector<string> words) {
+    ios_base::sync_with_stdio(false);
+    vector<int> answer;
     
-    // [실행] 버튼을 누르면 출력 값을 볼 수 있습니다. 
-   
-    string last_word = w[0];
-    m[w[0]] = 1;
-    int pinpoint = -1;
-    for(int i = 1; i < w.size(); i++){
-        if(w[i][0] != last_word[last_word.size() - 1]){
-            //cout << w[i] << "break\n";
-            pinpoint = i;
+    char last_word = words[0][words[0].size() - 1];
+    unordered_set<string> s;
+    s.insert(words[0]);
+    int idx = -1;
+    
+    for(int i = 1; i < words.size(); i++){
+        
+        string word = words[i];
+        if(last_word != word[0]){
+            idx = i;
             break;
         }
-        if(m.find(w[i]) != m.end()){
-            //cout << w[i] << "break\n";
-            pinpoint = i;
+        if(s.find(word) != s.end()){
+            idx = i;
             break;
         }
-        last_word = w[i];
-        m[w[i]] = 1;
+        s.insert(word);
+        last_word = word[word.size() - 1];
     }
     
-    int x = pinpoint / n + 1;
-    int y = pinpoint % n;
+    int number = idx % n + 1;
+    int cnt = idx / n + 1;
     
-    cout << y << "," << x;
-    if(y == - 1){
-        answer = {0, 0};
+    if(idx == -1){
+        answer.push_back(0);
+        answer.push_back(0);
     }
-    else answer = {y + 1, x};
+    else{
+        answer.push_back(number);
+        answer.push_back(cnt);
+    }
     return answer;
 }
