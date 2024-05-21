@@ -1,12 +1,12 @@
 #include <string>
 #include <vector>
-#include <iostream>
 #include <sstream>
 #include <unordered_map>
 #include <algorithm>
 using namespace std;
 
 vector<int> solution(vector<int> fees, vector<string> records) {
+    
     vector<int> answer;
     unordered_map <string, string> m;
     unordered_map <string, int> used;
@@ -15,7 +15,7 @@ vector<int> solution(vector<int> fees, vector<string> records) {
         stringstream ss(s);
         string t, idx, type;
         ss >> t >> idx >> type;
-        //cout << t << " " << idx << " " << type << "\n";
+
         if(type == "IN"){
             m[idx] = t;
         }
@@ -23,10 +23,8 @@ vector<int> solution(vector<int> fees, vector<string> records) {
             int last = stoi(t.substr(0, 2)) * 60 + stoi(t.substr(3,2));
             string temp = m[idx];
             int first = stoi(temp.substr(0, 2)) * 60 + stoi(temp.substr(3,2));
-            //cout << last - first << "\n";
             used[idx] += last - first;
             m.erase(m.find(idx));
-            //cout << last << "\n";
         }
     }
     
@@ -35,19 +33,14 @@ vector<int> solution(vector<int> fees, vector<string> records) {
         string temp = m[e.first];
         int first = stoi(temp.substr(0, 2)) * 60 + stoi(temp.substr(3,2));
         used[e.first] += last - first;
-       //m.erase(m.find(first));
     }
     
-
-    
+    m.clear();
     vector<pair<string,int>> v(used.begin(), used.end());
     sort(v.begin(), v.end());
-    for(auto e : v){
-        //cout << e.first << ": " << e.second << "\n";
-    }
-    
+
     for(auto e: v){
-        //cout << e.second << "!!!\n";
+        
         if(e.second <= fees[0]){
             answer.push_back(fees[1]);
         }
