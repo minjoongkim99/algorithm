@@ -16,9 +16,8 @@ vector<int> solution(vector<int> fees, vector<string> records) {
         string t, idx, type;
         ss >> t >> idx >> type;
 
-        if(type == "IN"){
+        if(type == "IN")
             m[idx] = t;
-        }
         else if(type == "OUT"){
             int last = stoi(t.substr(0, 2)) * 60 + stoi(t.substr(3,2));
             string temp = m[idx];
@@ -30,12 +29,11 @@ vector<int> solution(vector<int> fees, vector<string> records) {
     
     for(auto e : m){
         int last = 23 * 60 + 59;
-        string temp = m[e.first];
-        int first = stoi(temp.substr(0, 2)) * 60 + stoi(temp.substr(3,2));
+        int first = stoi(m[e.first].substr(0, 2)) * 60 + stoi(m[e.first].substr(3,2));
         used[e.first] += last - first;
     }
     
-    m.clear();
+    //m.clear();
     vector<pair<string,int>> v(used.begin(), used.end());
     sort(v.begin(), v.end());
 
