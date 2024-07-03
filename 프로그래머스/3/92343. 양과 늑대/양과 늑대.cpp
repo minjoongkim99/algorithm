@@ -1,65 +1,57 @@
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 vector<vector<int>> tree;
-int visited[1000];
-vector<int> comp;
+vector<int> visited, compare;
 int n, answer = 0;
 
 void dfs(vector<int> cur){
-    int sheep = 0;
-    int wolf = 0;
+    int sheep = 0, wolf = 0;
     
-    for(int i = 0; i < cur.size(); i++){
-        if(comp[cur[i]] == 0) 
-            sheep++;
-        else
+    for(auto c : cur){
+        if(compare[c] == 1)
             wolf++;
+        else
+            sheep++;
     }
-    
-    if(sheep <= wolf){
-        //cout << "CUR :";
-        //for(int i = 0; i < cur.size(); i++){
-        //    cout << cur[i] << " ";
-        //}
-        // cout << "\n";
+    if(wolf >= sheep)
         return;
-    }
     
-    if(answer < sheep){
-        answer = sheep;
-    }
+    answer = max(sheep, answer);
     
     for(int i = 0; i < cur.size(); i++){
-        int idx = cur[i];
+        int node = cur[i];
         
-        for(int j = 0; j < tree[idx].size(); j++){
-            if(visited[tree[idx][j]]) continue;
+        for(auto g : tree[node]){
             
-            visited[tree[idx][j]] = true;
-            cur.push_back(tree[idx][j]);
+            if(visited[g])  continue;
+            
+            visited[g] = true;
+            cur.push_back(g);
             dfs(cur);
             cur.pop_back();
-            visited[tree[idx][j]] = false;
+            visited[g] = false;
         }
     }
 }
 
 int solution(vector<int> info, vector<vector<int>> edges) {
-  
+    
     n = info.size();
     tree.resize(n);
-    //visited.resize(n, false);
-    comp = info;
+    visited.resize(n, false);
+    compare = info;
     
-    for(int i = 0; i < edges.size(); i++){
-        tree[edges[i][0]].push_back(edges[i][1]);
+    for(auto e: edges){
+        tree[e[0]].push_back(e[1]);
     }
     
     visited[0] = true;
+    
     dfs({0});
+    
     return answer;
 }
