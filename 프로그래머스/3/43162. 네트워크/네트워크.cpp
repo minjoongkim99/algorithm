@@ -1,48 +1,42 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <unordered_set>
-#include <unordered_map>
+#include <algorithm>
 using namespace std;
-int n;
-int parent[203];
-int visited[203];
-int getParent(int a){
-    if(parent[a] == a) return a;
-    else return parent[a] = getParent(parent[a]);
-}
 
-void unionParent(int a, int b){
-    int x = getParent(a), y = getParent(b);
+vector<vector<int>> adj;
+vector<int> visited;
+
+void dfs(int idx){
+    visited[idx] = true;
     
-    if(x == y) return;
-    else if(x > y) parent[x] = y;
-    else parent[y] = x;  
+    for(int i = 0; i < adj[idx].size(); i++){
+        int node = adj[idx][i];
+        if(visited[node])
+            continue;
+        dfs(node);
+    }
 }
 
-int solution(int N, vector<vector<int>> computers) {
+int solution(int n, vector<vector<int>> computers) {
     int answer = 0;
-    n = N;
-    for(int i = 0; i < n; i++)
-        parent[i] = i;
+    adj.resize(n);
+    visited.resize(n, 0);
     
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
-            if(computers[i][j]){
-                unionParent(i, j);
-            } 
+            if(i == j) continue;
+            if(computers[i][j] == 0) continue;
+            adj[i].push_back(j);
         }
     }
-    
-    unordered_map<int, bool> m;
+
+    int cnt = 0;
     for(int i = 0; i < n; i++){
-        int root = getParent(i);
-        if(!m[root]){
-            answer++;
-            m[root] = true;
-        }
+        if(visited[i])  continue;
+        dfs(i);
+        answer++;
     }
-   
-    
+    //cout << cnt << "\n";
     return answer;
 }
