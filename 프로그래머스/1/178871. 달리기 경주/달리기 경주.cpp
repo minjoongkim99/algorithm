@@ -1,28 +1,34 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-
+#include <iostream>
 using namespace std;
 
+unordered_map<string, int> m;
+unordered_map<int, string> im;
 vector<string> solution(vector<string> players, vector<string> callings) {
-    
     vector<string> answer;
-    unordered_map<string, int> m;
     
-    for(int i = 0; i < (int)players.size(); i++){
+    for(int i = 0; i < players.size(); i++){
         m[players[i]] = i;
+        im[i] = players[i];
     }
     
     for(auto e : callings){
         int cur = m[e];
-        string tmp = players[cur];
         
-        players[cur] = players[cur - 1];
-        players[cur - 1] = tmp;
+        string p1 = im[cur - 1];
+        string p2 = e;
         
-        m[players[cur - 1]] = cur - 1;
-        m[players[cur]] = cur;
+        m[p1] = cur;
+        im[cur] = p1;
+        
+        m[p2] = cur - 1;
+        im[cur - 1] = p2;
     }
     
-    return players;
+    for(int i = 0; i < players.size(); i++){
+        answer.push_back(im[i]);
+    }
+    return answer;
 }
