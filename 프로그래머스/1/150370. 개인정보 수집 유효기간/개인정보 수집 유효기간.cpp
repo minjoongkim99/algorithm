@@ -1,54 +1,62 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <map>
-
 using namespace std;
-map<string, int> m;
 
-void typeConvert(const vector<string> &terms){
-      for(int i = 0; i < terms.size(); i++){
-        string type = terms[i].substr(0, 1);
-        string len = terms[i].substr(2);
-        m[type] = stoi(len);
+int findDueDate(char c, const vector<string> terms){
+    for(int i = 0; i < terms.size(); i++){
+        if(c == terms[i][0]){
+            string str = terms[i].substr(2);
+            //cout << str << "\n";
+            return stoi(str);
+        }
     }
 }
+
 vector<int> solution(string today, vector<string> terms, vector<string> privacies) {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
     vector<int> answer;
-
-    int Y = stoi(today.substr(0, 4));
-    int M = stoi(today.substr(5, 2));
-    int D = stoi(today.substr(8, 2));
- 
-    typeConvert(terms);
     
-    for(int i = 0; i < privacies.size(); i++){
-
-        int year = stoi(privacies[i].substr(0, 4));
-        int month = stoi(privacies[i].substr(5, 2));
-        int day = stoi(privacies[i].substr(8, 2));
-        string type = privacies[i].substr(11);;
+    for(int idx = 0; idx < privacies.size(); idx++){
+        int year = stoi(privacies[idx].substr(0, 4));
+        int month = stoi(privacies[idx].substr(5, 2));
+        int day = stoi(privacies[idx].substr(8, 2));
+        char contract = privacies[idx].back();
         
-        int len = m[type];
-        
-        int n_year = year + (month + len - 1) / 12;
-        int n_month = (month + len - 1) % 12 + 1;
-
-        if(Y > n_year)
-            answer.push_back(i + 1);
-        else if(Y == n_year){
-            if(M > n_month){
-                answer.push_back(i + 1);
-            }
-            else if(M == n_month){
-                if(D >= day)
-                    answer.push_back(i + 1);
+        int plus = findDueDate(contract, terms);
+        day--;
+        if(day == 0){
+            month--;
+            day = 28;
+            if(month == 0){
+                year--;
+                month = 12;
             }
         }
         
+        int plusYear = plus / 12;
+        int plusMonth = plus % 12;
+        cout << plusYear << ", " << plusMonth << " : ";
+        
+        month += plusMonth;
+        if(month > 12){
+            month = month % 12;
+            year++;
+        }
+        year += plusYear;
+        
+        if(year < stoi(today.substr(0, 4))){
+            answer.push_back(idx + 1);
+        }
+        else if(year == stoi(today.substr(0, 4))){
+            if(month < stoi(today.substr(5, 2))){
+                answer.push_back(idx + 1);
+            }
+            else if(month == stoi(today.substr(5, 2))){
+                if(day < stoi(today.substr(8, 2)))
+                    answer.push_back(idx + 1);
+            }
+        }
+        //cout << year << " " << month << " " << day << " " << contract << "\n";
     }
-    
     return answer;
 }
