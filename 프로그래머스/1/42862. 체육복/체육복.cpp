@@ -28,7 +28,6 @@ int solution(int n, vector<int> lost, vector<int> reserve) {
     }
     
     for(auto e : lost){
-
         if(e - 1 > 0 && resv[e - 1] == 1 && have[e] == 0){
             resv[e - 1] = 0;
             have[e] = 1;
