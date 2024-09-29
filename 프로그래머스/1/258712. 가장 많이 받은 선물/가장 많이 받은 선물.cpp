@@ -1,68 +1,59 @@
 #include <string>
 #include <vector>
-#include <iostream>
 #include <unordered_map>
-
 using namespace std;
 
-unordered_map<string, int> given;
-unordered_map<string, int> gave;
+unordered_map<string, int> m1;
+unordered_map<int, string> m2;
+unordered_map<string ,int> give;
+unordered_map<string ,int> given;
 unordered_map<string, int> point;
- 
+vector<vector<int>> table;
 int solution(vector<string> friends, vector<string> gifts) {
     int answer = 0;
-    vector<int> ret(friends.size(), 0);
-    vector<vector<int>> table(friends.size(), vector<int>(friends.size(), 0));
+    table.resize(friends.size(), vector<int>(friends.size(), 0));
+    for(int i = 0; i < friends.size(); i++){
+        m1[friends[i]] = i;
+        m2[i] = friends[i];
+        given[friends[i]] = 0;
+        give[friends[i]] = 0;
+    }
     
-    for(int i = 0 ; i < gifts.size(); i++){
+    for(int i = 0; i < gifts.size(); i++){
+        string str1, str2;
         for(int j = 0; j < gifts[i].size(); j++){
             if(gifts[i][j] == ' '){
-                string a = gifts[i].substr(0, j);
-                string b = gifts[i].substr(j + 1);
-                //cout << a << " and " << b << "\n";
-                for(int u = 0; u < friends.size(); u++){
-                   for(int v = 0; v < friends.size(); v++){
-                       if(friends[u] == a && friends[v] == b){
-                           table[u][v]++;
-                       }
-                   }
-                }
-                gave[a]++;
-                given[b]++;
+                str1 = gifts[i].substr(0, j);
+                str2 = gifts[i].substr(j + 1);
+                table[m1[str1]][m1[str2]]++;
+                give[str1]++;
+                given[str2]++;
+                break;
             }
         }
     }
-    
+
     for(int i = 0; i < friends.size(); i++){
-        for(int j = 0; j < friends.size(); j++){
-            cout << table[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    
-    for(auto e : friends){
-        //cout << e << "가 준 것" << gave[e] << " 받은 것: " << given[e];
-        point[e] = (gave[e] - given[e]);
-        //cout << " 포인트: " << point[e] << "\n";
-    }
-    
-    for(int i = 0; i < friends.size(); i++){
-        for(int j = 0 ; j < friends.size(); j++){
-            if(i == j) continue;
+        for(int j = i + 1; j < friends.size(); j++){
             if(table[i][j] > table[j][i]){
-                ret[i]++;
+                point[m2[i]]++;
             }
-            else if(table[i][j] == table[j][i]){
-                if(point[friends[i]] > point[friends[j]]){
-                    ret[i]++;
+            else if(table[i][j] < table[j][i]){
+                point[m2[j]]++;
+            }
+            else{
+                if(give[m2[i]] - given[m2[i]] > give[m2[j]] - given[m2[j]]){
+                    point[m2[i]]++;
+                }
+                if(give[m2[i]] - given[m2[i]] < give[m2[j]] - given[m2[j]]){
+                    point[m2[j]]++;
                 }
             }
         }
     }
-    
-    for(auto e : ret){
-        if(answer < e)
-            answer = e;
+    for(auto e : point){
+        if(e.second > answer)
+            answer = e.second;
     }
     return answer;
 }
