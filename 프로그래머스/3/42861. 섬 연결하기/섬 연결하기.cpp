@@ -16,12 +16,13 @@ void unionParent(int a, int b) {
     int x = getParent(a);
     int y = getParent(b);
     
-    if (x != y) {
-        if (x > y) {
-            parent[x] = y;
-        } else {
-            parent[y] = x;
-        }
+    if(x == y)
+        return;
+    else if(x > y){
+        parent[x] = y;
+    }
+    else{
+        parent[y] = x;
     }
 }
 
