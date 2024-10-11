@@ -1,25 +1,22 @@
-#include <string>
-#include <vector>
-#include <unordered_map>
+#include <bits/stdc++.h>
 using namespace std;
 
-unordered_map<string, int> um;
-string solution(vector<string> participant, vector<string> completion) {
+map<string, int> m;
+string solution(vector<string> p, vector<string> c) {
     string answer = "";
     
-    for(string str : participant){
-        um[str]++;
+    for(auto e : p){
+        m[e]++;
     }
-    for(string str : completion){
-        um[str]--;
-    }
-    
-    for(auto e : um){
-        if(e.second == 1){
-            answer = e.first;
-            break;
-        }
+    for(auto e : c){
+        m[e]--;
+        if(m[e] == 0)
+            m.erase(e);
     }
     
+    for(auto e : m){
+        answer = e.first;
+        break;
+    }
     return answer;
 }
