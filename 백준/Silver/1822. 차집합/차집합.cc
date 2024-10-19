@@ -1,43 +1,41 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <algorithm>
-#include <set>
 using namespace std;
 
 int n, m;
 vector<int> v1, v2;
-int main(){
+vector<int> ans;
+int main() {
+    // 여기에 코드를 작성해주세요.
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    cout.tie(nullptr);  cin.tie(nullptr);
     cin >> n >> m;
-
-
-    for(int i = 0; i < n; i++){
-        int x;
-        cin >> x;
-        v1.push_back(x);
-    }
-    for(int i = 0; i < m; i++){
-        int x;
-        cin >> x;
-        v2.push_back(x);
-    }
+    v1.resize(n, 0);
+    v2.resize(m, 0);
+    for(int i = 0; i < n; i++)
+        cin >> v1[i];
+    for(int i = 0; i < m; i++)
+        cin >> v2[i];
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
 
-    vector<int> ans;
+
     for(int i = 0; i < n; i++){
-        int t = binary_search(v2.begin(), v2.end(), v1[i]);
-        if(t == 0)
+        if(binary_search(v2.begin(), v2.end(), v1[i]))
+            continue;
+        else
             ans.push_back(v1[i]);
     }
 
-    cout << ans.size() << "\n";
-
-    for (auto e: ans)
-        cout << e << " ";
-
+    if(ans.empty())
+        cout << 0 << '\n';
+    else{
+        cout << ans.size() << '\n';
+        for(int i = 0; i < ans.size(); i++){
+            cout << ans[i] << ' ';
+        }
+    }
 
     return 0;
 }
