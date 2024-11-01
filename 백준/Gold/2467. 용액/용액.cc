@@ -2,52 +2,47 @@
 #include <algorithm>
 #include <cmath>
 using namespace std;
-
+int ans = 2000000002;
 int n;
-int arr[100005];
-int val = 2000000000;
-long st, en;
+int arr[100002];
+int l, r;
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);   cout.tie(nullptr);
+    ios::sync_with_stdio(0);
+    cout.tie(nullptr);				cin.tie(nullptr);
 
     cin >> n;
-
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n; i++)
         cin >> arr[i];
-    }
+    sort(arr, arr + n);
 
     for(int i = 0; i < n; i++){
-        long idx = lower_bound(arr, arr + n, -arr[i]) - &arr[0];
+        int idx = lower_bound(arr, arr + n, -arr[i]) - arr;
 
-        if(idx < n && idx != i) {
-            if (abs(arr[idx] + arr[i]) < abs(val)) {
-                val = abs(arr[idx] + arr[i]);
-                st = idx;
-                en = i;
+        if(idx - 1 >= 0 && idx - 1 != i){
+            if(abs(arr[i] + arr[idx - 1]) < ans) {
+                ans = abs(arr[i] + arr[idx - 1]);
+                l = i;
+                r = idx - 1;
             }
         }
-
-        if(idx - 1 < n && idx - 1 != i && idx - 1 >= 0) {
-            if (abs(arr[idx - 1] + arr[i]) < abs(val)) {
-                val = abs(arr[idx - 1] + arr[i]);
-                st = idx - 1;
-                en = i;
+        if(idx < n && idx != i){
+            if(abs(arr[i] + arr[idx]) < ans) {
+                ans = abs(arr[i] + arr[idx]);
+                l = i;
+                r = idx;
             }
         }
-        if(idx + 1 < n && idx + 1 != i && idx + 1 >= 0) {
-            if (abs(arr[idx + 1] + arr[i]) < abs(val)) {
-                val = abs(arr[idx + 1] + arr[i]);
-                st = idx + 1;
-                en = i;
+        if(idx + 1 < n && idx + 1 != i){
+            if(abs(arr[i] + arr[idx + 1]) < ans) {
+                ans = abs(arr[i] + arr[idx + 1]);
+                l = i;
+                r = idx + 1;
             }
         }
-
     }
-    
-    if(arr[st] < arr[en])
-        cout << arr[st] << " " << arr[en] << "\n";
-    else
-        cout << arr[en] << " " << arr[st] << "\n";
+
+    if(arr[l] < arr[r])
+        cout << arr[l] << ' ' << arr[r] << '\n';
+    else cout << arr[r] << ' ' << arr[l] << '\n';
     return 0;
 }
