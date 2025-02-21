@@ -19,16 +19,16 @@ pair<int,int> bfs(int i, int j){
     int cnt = 1, red = 0;
 
     while(!q.empty()){
-        int y = q.front().first;
-        int x = q.front().second;
+        int y = q.front().first, x = q.front().second;
         q.pop();
 
-        for(int dir = 0; dir < 4; dir++){
+        for(int dir = 0; dir < 4; ++dir){
             int yy = y + dy[dir];
             int xx = x + dx[dir];
             if(yy < 0 || yy >= n || xx < 0 || xx >= n) continue;
             if(visited[yy][xx]) continue;
             if(arr[yy][xx] == -1) continue;
+
             if(arr[yy][xx] == arr[i][j]){
                 q.push({yy, xx});
                 visited[yy][xx] = visited[y][x] + 1;
@@ -46,8 +46,8 @@ pair<int,int> bfs(int i, int j){
 }
 
 void clearRed(){
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             if(arr[i][j] == 0){
                 visited[i][j] = 0;
             }
@@ -63,7 +63,7 @@ void erasing(int i, int j){
         int x = q.front().second;
         q.pop();
 
-        for(int dir = 0; dir < 4; dir++){
+        for(int dir = 0; dir < 4; ++dir){
             int yy = y + dy[dir];
             int xx = x + dx[dir];
             if(yy < 0 || yy >= n || xx < 0 || xx >= n) continue;
@@ -88,12 +88,16 @@ void erasing(int i, int j){
 }
 
 void gravity(){
-    for(int j = 0; j < n; j++){
-        for(int i = n - 1; i >= 0; i--){
-            if(arr[i][j] != -2) continue;
-            for(int k = i - 1; k >= 0; k--){
-                if(arr[k][j] == -1) break;
-                if(arr[k][j] == -2) continue;
+    for(int j = 0; j < n; ++j){
+
+        for(int i = n - 1; i >= 0; --i){
+
+            if(arr[i][j] != -2) continue;   // 빈칸이 아니라면 continue;
+
+            for(int k = i - 1; k >= 0; --k){
+
+                if(arr[k][j] == -1) break;  // 돌이라면 끝내기
+                if(arr[k][j] == -2) continue; // 탐색하는 칸이 빈칸이라면 윗칸 탐색 계속.
                 else{
                     arr[i][j] = arr[k][j];
                     arr[k][j] = -2;
@@ -105,30 +109,33 @@ void gravity(){
 }
 
 void rotate_left(){
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             tmp[i][j] = arr[i][j];
 
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             arr[i][j] = tmp[j][n - i - 1];
 } 
 
 int main() {
     // 여기에 코드를 작성해주세요.
     cin >> n >> m;
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             cin >> arr[i][j];
 
     while(true){
         fill(&visited[0][0], &visited[0][0] + 21 * 21, 0);
         int tot = 1, red = 0, ny = -1, nx = -1;
 
-        for(int i = n - 1; i >= 0; i--){
-            for(int j = 0; j < n; j++){
+        for(int i = n - 1; i >= 0; --i){
+
+            for(int j = 0; j < n; ++j){
+
                 if(arr[i][j] <= 0) continue;
                 if(visited[i][j] > 0) continue;
+
                 pair<int, int> val = bfs(i, j);
                 if(val.first + val.second > tot){
                     tot = val.first + val.second;
@@ -143,6 +150,7 @@ int main() {
                         nx = j;
                     }
                 }
+
                 clearRed();
             }
         }
@@ -161,6 +169,7 @@ int main() {
         gravity();
         
     }
+
     cout << point << '\n';
     return 0;
 }
