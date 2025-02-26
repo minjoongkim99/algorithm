@@ -122,7 +122,8 @@ void gravity(){
 }
 
 int main() {
-    // Please write your code here.
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr); cin.tie(nullptr);
     cin >> n >> m;
     for(int i = 0; i < n; ++i){
         for(int j = 0; j < n; ++j){
