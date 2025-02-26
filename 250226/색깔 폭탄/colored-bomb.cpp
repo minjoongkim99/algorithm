@@ -56,7 +56,6 @@ void erasingAndPoint(int i, int j){
     fill(&visited[0][0], &visited[0][0] + 22 * 22, 0);
     int val = arr[i][j];
 
-    //cout << i << " " << j << " " << val << "\n";
     queue<pair<int,int>> q;
     q.push({i, j});
     visited[i][j] = 1;
@@ -94,11 +93,9 @@ void rotate_left(){
         }                                  // 시계방향은 당연히 알고, 직사각형 배열 회전 시 어떻게 되는가?
     }                                      // 직사각형 배열의 회전 구성도.
 
-    for(int i = 0; i < n; ++i){
-        for(int j = 0; j < n; ++j){
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             arr[i][j] = tmp[i][j];
-        }
-    }
 }
 
 void gravity(){
@@ -122,27 +119,20 @@ void gravity(){
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cout.tie(nullptr); cin.tie(nullptr);
     cin >> n >> m;
-    for(int i = 0; i < n; ++i){
-        for(int j = 0; j < n; ++j){
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             cin >> arr[i][j];
-        }
-    }
-    // 더 이상 폭탄 묶음이 없을 때까지 시뮬레이션을 진행한 최종 점수.
-    // 더 이상 폭탄 묶음이 없으려면 시작 코드는 for문이어야 하는가. true여야 하는가.
+        
     while(true){ // for test
         fill(&visited[0][0], &visited[0][0] + 22 * 22, 0);
         redCnt = bombCnt = 0;
         ny = -1, nx = -1;
 
-        // 행큰 열작으로 탐색 순서가 정해져있음
         for(int i = n; i >= 0; --i){
             for(int j = 0; j < n; ++j){
-                if(visited[i][j] || arr[i][j] <= 0) continue; // 코드 줄이기 ||
+                if(visited[i][j] || arr[i][j] <= 0) continue; 
                 
-                // 빨강색 visited[][] 초기화를 해줘야함. 왜 여기서 하는가에 대해 생각.
                 redInit();
 
                 pair<int,int> ret = bfs(i, j);               // first = 빨강 이외, second = 빨강
