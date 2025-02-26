@@ -52,6 +52,7 @@ pair<int,int> bfs(int i, int j){
     return {bCnt, rCnt};
 }
 
+// BFS 2번이면 1번 BFS 복붙으로 시간단축, 전형적 BFS가 아니라면 2개의 BFS 차이 고려하며 특수 조건 구현하기
 void erasingAndPoint(int i, int j){
     fill(&visited[0][0], &visited[0][0] + 22 * 22, 0);
     int val = arr[i][j];
@@ -126,14 +127,14 @@ int main() {
         
     while(true){ // for test
         fill(&visited[0][0], &visited[0][0] + 22 * 22, 0);
-        redCnt = bombCnt = 0;
-        ny = -1, nx = -1;
+        redCnt = 0, bombCnt = 0;                //////////////////////////////
+        ny = -1, nx = -1;                       //////////////////////////////
 
         for(int i = n; i >= 0; --i){
             for(int j = 0; j < n; ++j){
                 if(visited[i][j] || arr[i][j] <= 0) continue; 
-                
-                redInit();
+                                                // BFS 특수 조건 붙으면 어떻게 구현해야할지 생각하기
+                redInit();                      // BFS에서 조건이 특수하다. 이것을 고려해야한다.
 
                 pair<int,int> ret = bfs(i, j);               // first = 빨강 이외, second = 빨강
                
@@ -155,7 +156,7 @@ int main() {
         }
 
         if((bombCnt + redCnt) < 2) break;
-        if(ny == -1 || nx == -1) break;
+        //if(ny == -1 || nx == -1) break;
 
         erasingAndPoint(ny, nx);
 
