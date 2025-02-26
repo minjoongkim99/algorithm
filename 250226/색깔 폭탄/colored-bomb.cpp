@@ -60,7 +60,7 @@ void erasingAndPoint(int i, int j){
     queue<pair<int,int>> q;
     q.push({i, j});
     visited[i][j] = 1;
-    arr[i][j] = -2;
+    arr[i][j] = -2;                                 // 차이;
     int cnt = 1;
 
     while(!q.empty()){
@@ -73,11 +73,11 @@ void erasingAndPoint(int i, int j){
             if(yy < 0 || yy >= n || xx < 0 || xx >= n) continue;
             if(visited[yy][xx]) continue;           // 방문처리는 규격이다;
 
-            if(arr[yy][xx] == val || arr[yy][xx] == 0){
+            if(arr[yy][xx] == val || arr[yy][xx] == 0){     // 합칠 수 있는 이유는 무엇인가?
                 cnt++;
                 visited[yy][xx] = 1;
                 q.push({yy, xx});
-                arr[yy][xx] = -2;
+                arr[yy][xx] = -2;                   // 차이;
             }
         }
     }
@@ -99,8 +99,7 @@ void rotate_left(){
             arr[i][j] = tmp[i][j];
 }
 
-void gravity(){
-    // 빈칸:-2 검은돌:-1 빨강:0 그외:1~m
+void gravity(){                             // 빈칸:-2 검은돌:-1 빨강:0 그외:1~m
     for(int j = 0; j < n; ++j){             // 행과 열에 대하여.
 
         for(int i = n - 1; i > 0; --i){
@@ -126,7 +125,7 @@ int main() {
             cin >> arr[i][j];
         
     while(true){ // for test
-        fill(&visited[0][0], &visited[0][0] + 22 * 22, 0);
+        fill(&visited[0][0], &visited[0][0] + 22 * 22, 0); // 있어야 하는 이유는 무엇일까? visited[][]
         redCnt = 0, bombCnt = 0;                //////////////////////////////
         ny = -1, nx = -1;                       //////////////////////////////
 
@@ -155,8 +154,7 @@ int main() {
             }
         }
 
-        if((bombCnt + redCnt) < 2) break;
-        //if(ny == -1 || nx == -1) break;
+        if((bombCnt + redCnt) < 2) break;   //if(ny == -1 || nx == -1) break;
 
         erasingAndPoint(ny, nx);
 
