@@ -15,7 +15,7 @@ vector<int> v;
 void attack(int d, int p){
     int y = n / 2, x = n / 2;
 
-    for(int len = 1; len <= p; ++len){
+    for(register int len = 1; len <= p; ++len){
         int yy = y + len * dy[d];
         int xx = x + len * dx[d];
         if(yy < 0 || yy >= n || xx < 0 || xx >= n) 
@@ -60,7 +60,7 @@ int check4(){
     int flag = 0;
     fill(&visited[0], &visited[0] + 900, 0);
     
-    for(int i = 0; i < v.size() - 3; ++i){
+    for(register int i = 0; i < v.size() - 3; ++i){
         if(v[i] == v[i + 1] && v[i + 1] == v[i + 2] && v[i + 2] == v[i + 3]){
             flag = 1;
             visited[i] = visited[i + 1] = visited[i + 2] = visited[i + 3] = 1;
@@ -71,7 +71,7 @@ int check4(){
 
 void getPoint(){
     vector<int> tmp;
-    for(int i = 0; i < v.size(); ++i){
+    for(register int i = 0; i < v.size(); ++i){
         if(visited[i] == 0){
             tmp.push_back(v[i]);
         }
@@ -86,7 +86,7 @@ void getPoint(){
 void makeNewNumber(){
     vector<int> tmp;
     int cnt = 1;
-    for(int i = 0; i < v.size() - 1; ++i){
+    for(register int i = 0; i < v.size() - 1; ++i){
         if(v[i] == v[i + 1]){
             cnt++;
         }
@@ -135,14 +135,14 @@ void toArr(){
 
 int main() {
     int T = 1;
-    for(int tc = 1; tc <= T; ++tc){
+    for(register int tc = 1; tc <= T; ++tc){
         // init();
         cin >> n >> m;
-        for(int i = 0; i < n; ++i)
-            for(int j = 0; j < n; ++j)
+        for(register int i = 0; i < n; ++i)
+            for(register int j = 0; j < n; ++j)
                 cin >> arr[i][j];
 
-        for(int run = 0; run < m; ++run){
+        for(register int run = 0; run < m; ++run){
             cin >> d >> p;
 
             attack(d, p);
