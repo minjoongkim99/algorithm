@@ -28,11 +28,10 @@ void attack(int d, int p){
 }
 
 void fillEmpty(){
-    v.clear();
-
     int y = n / 2, x = n / 2;
     int len = 1, cur = 0, k = 0;
     int dir = 2;
+
     while(true){
         int yy = y + dy[dir];
         int xx = x + dx[dir];
@@ -81,7 +80,7 @@ void getPoint(){
         }
     }
     v.clear();
-    v= tmp;
+    v = tmp;
 }
 
 void makeNewNumber(){
@@ -97,10 +96,10 @@ void makeNewNumber(){
             cnt = 1;
         }
     }
-    tmp.push_back(cnt);
-    tmp.push_back(v[v.size() - 1]);
-    v.clear();
-    v = tmp;
+    tmp.push_back(cnt);                 //
+    tmp.push_back(v[v.size() - 1]);     // 문제 그림 보면서 왜 그래야하는지 복기.
+    v.clear();                          
+    v = tmp;                            // 임시 벡터(배열) tmp 선언 OverWrite 습관화
 }
 
 void toArr(){
@@ -135,9 +134,7 @@ void toArr(){
 }
 
 int main() {
-    // Please write your code here.
     int T = 1;
-
     for(int tc = 1; tc <= T; ++tc){
         // init();
         cin >> n >> m;
@@ -147,7 +144,6 @@ int main() {
 
         for(int run = 0; run < m; ++run){
             cin >> d >> p;
-            v.clear();
 
             attack(d, p);
     
@@ -163,10 +159,11 @@ int main() {
             makeNewNumber();
             
             toArr();
+            v.clear();
         }
 
         cout << point << '\n';
     }
-
+    // Vector <-> Arr 간 옮기고 이동하기 문제임.
     return 0;
 }
