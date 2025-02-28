@@ -4,13 +4,11 @@
 using namespace std;
 
 int n;
-int arr[31][31];
-int visited[31][31]; // bfs니 바로.
+int arr[31][31], visited[31][31]; // bfs니 바로.
 int point = 0;
 int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
-int idx[901];
-int idx_cnt[900];
+int idx[901], idx_cnt[900];
 int idx_near[901][901];
 
 void init(){
@@ -114,10 +112,7 @@ void rotateRight(){
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cout.tie(nullptr);  cin.tie(nullptr);
     cin >> n;
-
     for(register int i = 0; i < n; ++i)
         for(register int j = 0; j < n; ++j)
             cin >> arr[i][j];
