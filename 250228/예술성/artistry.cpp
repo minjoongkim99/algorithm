@@ -9,15 +9,15 @@ int visited[31][31]; // bfs니 바로.
 int point = 0;
 int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
-int idx[961];
-int idx_cnt[961];
-int idx_near[961][961];
+int idx[901];
+int idx_cnt[900];
+int idx_near[901][901];
 
 void init(){
-    fill(&idx[0], &idx[0] + 961, 0);
-    fill(&idx_cnt[0], &idx_cnt[0] + 961, 0);
+    fill(&idx[0], &idx[0] + 901, 0);
+    fill(&idx_cnt[0], &idx_cnt[0] + 901, 0);
     fill(&visited[0][0], &visited[0][0] + 31 * 31, 0);
-    fill(&idx_near[0][0], &idx_near[0][0] + 961 * 961, 0);
+    fill(&idx_near[0][0], &idx_near[0][0] + 901 * 901, 0);
 }
 
 void bfs(int i, int j, int val){
