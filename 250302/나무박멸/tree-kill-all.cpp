@@ -9,26 +9,7 @@ int tot = 0;
 int ddy[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
 int ddx[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
-void showArr(){
-    for(register int i = 0; i < n; ++i){
-        for(register int j = 0; j < n; ++j){
-            cout << arr[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
-void showKiller(){
-    for(register int i = 0; i < n; ++i){
-        for(register int j = 0; j < n; ++j){
-            cout << killer[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
-void growth(){
-    // 동시에 나무의 성장. 동시에 일어나는 함수란?
+void growth(){      // 동시에 나무의 성장. 동시에 일어나는 함수란?
     for(register int i = 0; i < n; ++i){
         for(register int j = 0; j < n; ++j){
             if(arr[i][j] <= 0) continue;
@@ -155,36 +136,29 @@ void decreaseKiiler(){
 }
 
 int main() {
-    // Please write your code here.
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr);  cin.tie(nullptr);
     cin >> n >> m >> k >> c;
     for(register int i = 0; i < n; ++i)
         for(register int j = 0; j < n; ++j)
             cin >> arr[i][j];
 
     int T = 1;
-
     for(register int tc = 1; tc <= T; ++tc){
         for(register int run = 1; run <= m; ++run){
             growth(); // 동시
 
             makeNew(); // 번식
 
-            //showArr();
-
             pair<int,int> pos = findPos();  // 가장 많이 나오는 좌표 잡기.
-            //cout << pos.first << " and " << pos.second << "\n";
 
             attack(pos.first, pos.second);
 
             decreaseKiiler();
 
-            //cout << "공격 후\n";
-            //showArr();
-
-            //cout << "TOT : " << tot << "\n";
+            cout << tot << '\n';
         }
     }
 
-    cout << tot << '\n';
     return 0;
 }
