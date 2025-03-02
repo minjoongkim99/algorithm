@@ -155,9 +155,8 @@ int main() {
             attack(pos.first, pos.second);
 
             decreaseKiiler();
-
-            cout << tot << '\n';
         }
+        cout << tot << '\n';
     }
 
     return 0;
