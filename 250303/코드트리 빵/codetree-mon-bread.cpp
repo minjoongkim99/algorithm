@@ -4,17 +4,16 @@
 using namespace std;
 
 int n, m;
-
 struct person{
     int cy, cx, ty, tx, died;
 };
-person P[32];
+person P[32];           // 구조체의 멤버변수는 무엇이 들어가야할까? 추가한다면 idx. 기반
+//  int point[32], died[32] etc...
 
 int dy[4] = {-1, 0, 0, 1};
 int dx[4] = {0, -1, 1, 0};
 
-int arr[17][17];
-int visited[17][17];
+int arr[17][17], visited[17][17];
 int pre[17][17][2];     // [][][] 이유는
 int t = 1;
 
@@ -25,14 +24,14 @@ void init(){
 
 int checkFinsihed(){
     for(register int idx = 1; idx <= m; ++idx){
-        if(P[idx].died == 0) return 0;
+        if(P[idx].died == 0)            // 많이 쓰던 technique. someone die.
+            return 0;
     }
     return 1;
 }
 
 int bfs(int cy, int cx, int ty, int tx){
-    init();
-
+    init();                             // HOW? 어디까지 갖고 있는지에 대해 생각.
     queue<pair<int,int>> q;
     q.push({cy,cx});
     visited[cy][cx] = 1;
@@ -42,6 +41,7 @@ int bfs(int cy, int cx, int ty, int tx){
         int y = q.front().first;
         int x = q.front().second;
         q.pop();
+
         if(y == ty && x == tx)
             break;
 
@@ -60,7 +60,7 @@ int bfs(int cy, int cx, int ty, int tx){
 
     return visited[ty][tx];
 }
-
+//////////////////////////////////////////////////////////
 void movePerson(int idx){
     bfs(P[idx].cy, P[idx].cx, P[idx].ty, P[idx].tx);
 
@@ -78,6 +78,7 @@ void movePerson(int idx){
     P[idx].cy = cy;
     P[idx].cx = cx;
 }
+//////////////////////////////////////////////////////////
 
 void makeBlind(){
     for(register int idx = 1; idx <= m; ++idx){
@@ -85,7 +86,7 @@ void makeBlind(){
         if(P[idx].cy == P[idx].ty && P[idx].cx == P[idx].tx){
             P[idx].died = 1;
             arr[P[idx].cy][P[idx].cx] = -1;
-        }
+        }   // 조건에 맞다면 처리해야할 것.
     }
 }
 
@@ -102,7 +103,7 @@ void enterPerson(int idx){
                 cy = i;
                 cx = j;
             }
-        }
+        }   // d > 0 && BFS의 특성.
     }
 
     P[idx].cy = cy;
@@ -111,7 +112,9 @@ void enterPerson(int idx){
 }
 
 int main() {
-    // Please write your code here.
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr);  cin.tie(nullptr);
+
     cin >> n >> m;
     for(register int i = 1; i <= n; ++i)
         for(register int j = 1; j <= n; ++j)
@@ -124,25 +127,21 @@ int main() {
     }
 
     while(true){
-        //cout << t << "!\n";
-        int k = min(t, m + 1);
-        for(register int idx = 1; idx < k; ++idx){
+    
+        for(register int idx = 1; idx < min(t, m + 1); ++idx){
             if(P[idx].died == 1) continue;
             movePerson(idx);
-            //cout << idx << "번 이동: " << P[idx].cy << " " << P[idx].cx << ".\n";
         }
 
         makeBlind();
-        
-        if(t <= m){
+
+        if(t <= m)
             enterPerson(t);
-            //cout << t << "번 입장: "<< P[t].cy << " " << P[t].cx << "!\n";
-        }
 
         int flag = checkFinsihed();
         if(flag == 1)
             break;
-
+            
         t++;
     }
 
