@@ -1,14 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
 int n, m, k;
 vector<int> gun_map[23][23];
-
-int point[32];              //
-int gun[32];                //
 
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
@@ -17,20 +13,8 @@ struct person{
     int x, y, dir, s;
 };
 person P[32];
-
-void printPos(){
-    cout << "좌표\n";
-    for(register int i = 1; i <= m; ++i){
-        cout << P[i].x << ' ' << P[i].y << "\n";
-    }
-}
-void printGun(){
-    cout << "총: ";
-    for(register int i = 1; i <= m; ++i){
-        cout << gun[i] << " ";
-    }
-    cout << "\n";
-}
+int point[32];              //
+int gun[32];                //
 
 void movePerson(int idx){
     int nx = P[idx].x + dx[P[idx].dir];
@@ -102,7 +86,7 @@ void loserAction(int idx){
 
         int flag = 0;
         for(register int i = 1; i <= m; ++i){
-            if(i == idx) continue;
+            if(i == idx) continue;              //
             if(P[i].x == nx && P[i].y == ny){
                 flag = 1;
                 break;
@@ -124,9 +108,10 @@ void winnerAction(int idx){
 }
 
 int main() {
-    // Please write your code here.
-    cin >> n >> m >> k;
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr);  cin.tie(nullptr);
 
+    cin >> n >> m >> k;
     for(register int i = 1; i <= n; ++i){
         for(register int j = 1; j <= n; ++j){
             int x;
@@ -139,30 +124,24 @@ int main() {
         cin >> P[i].x >> P[i].y >> P[i].dir >> P[i].s;
     }
 
-
     for(register int run = 1; run <= k; ++run){
         
         for(register int idx = 1; idx <= m; ++idx){
             movePerson(idx);
 
             int flag = checkConflict(idx);
-
             if(flag == 0){
                 changeGun(idx);
             }
             else{
                 pair<int,int> ret = fight(idx, flag);
-                //cout << "BATTLE " << ret.first << ' ' << ret.second << '\n';
                 loserAction(ret.second);
                 winnerAction(ret.first);
             }
         }
-        //printGun();
-        //printPos();
     }
 
-    for(int i = 1; i <= m; ++i){
+    for(int i = 1; i <= m; ++i)
         cout << point[i] << ' ';
-    }
     return 0;
 }
