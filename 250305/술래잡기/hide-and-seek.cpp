@@ -47,7 +47,7 @@ void playerMove(){
 void move1(){
     attackerX += dx[attackerDir];
     attackerY += dy[attackerDir];
-    
+
     cur++;
     if(len == cur){
         s++;
@@ -59,7 +59,7 @@ void move1(){
         s = 0;
     }
 
-    if(xx == 1 && yy == 1){
+    if(attackerX == 1 && attackerY == 1){
         attackerDir = 2;
         fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
         flag = 1;
