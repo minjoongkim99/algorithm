@@ -31,11 +31,12 @@ void playerMove(){
         int ny = P[idx].y + dy[P[idx].dir];
 
         if(nx < 1 || nx > n || ny < 1 || ny > n){
-            P[idx].dir = (P[idx].dir + 2) % 4;
+            P[idx].dir = (P[idx].dir + 2) % 4;      ////
             nx = P[idx].x + dx[P[idx].dir];
             ny = P[idx].y + dy[P[idx].dir];
         }
 
+        ////////////////////////
         if(nx == attackerX && ny == attackerY)  continue;
         
         P[idx].x = nx;
@@ -44,12 +45,9 @@ void playerMove(){
 }
 
 void move1(){
-    int xx = attackerX + dx[attackerDir];
-    int yy = attackerY + dy[attackerDir];
-
-    attackerX = xx;
-    attackerY = yy;
-
+    attackerX += dx[attackerDir];
+    attackerY += dy[attackerDir];
+    
     cur++;
     if(len == cur){
         s++;
