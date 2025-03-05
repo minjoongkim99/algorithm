@@ -9,6 +9,7 @@ struct player{
     int x, y, dir, died;
 };
 player P[10000];
+
 int tree[101][101]; // 1-indexed
 int visited[101][101];
 int attackerX, attackerY, attackerDir;
@@ -18,16 +19,6 @@ int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
 
 int len = 1, cur = 0, s = 0, flag = 0;
-
-void printPlayer(){
-    for(register int idx = 1; idx <= m; ++ idx){
-        cout <<  idx << "번: " << P[idx].x << " " << P[idx].y << " " << P[idx].dir << "\n";
-    }
-}
-
-void printAttacker(){
-    cout << "공격자 " << attackerX << " " << attackerY << " " << attackerDir << "!\n";
-}
 
 void playerMove(){
     for(register int idx = 1; idx <= m; ++idx){
@@ -45,16 +36,14 @@ void playerMove(){
             ny = P[idx].y + dy[P[idx].dir];
         }
 
-        if(nx == attackerX && ny == attackerY){
-            continue;
-        }
+        if(nx == attackerX && ny == attackerY)  continue;
+        
         P[idx].x = nx;
         P[idx].y = ny;
     }
 }
 
 void move1(){
-    
     int xx = attackerX + dx[attackerDir];
     int yy = attackerY + dy[attackerDir];
 
@@ -92,9 +81,7 @@ void move2(){
         attackerDir = (attackerDir + 3) % 4;
     }
 
-
     if(attackerX == (n / 2) + 1 && attackerY == (n / 2) + 1){
-        //cout << "공격자 중앙 도착 flag 전환\n";
         attackerDir = 0;
         len = 1, cur = 0, s = 0, flag = 0;
     }
@@ -113,7 +100,7 @@ void getPoint(int t){
     for(register int len = 0; len < 3; ++len){
         int xx = attackerX + len * dx[attackerDir];
         int yy = attackerY + len * dy[attackerDir];
-        //cout << xx << " and " << yy << "\n";
+
         if(xx < 1 || xx > n || yy < 1 || yy > n) continue;
         if(tree[xx][yy] == 1) continue;
 
@@ -125,12 +112,12 @@ void getPoint(int t){
             }
         }
     }
-
     point += (t * cnt);
 }
 
 int main() {
-    // Please write your code here.
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr);  cin.tie(nullptr);
 
     int T = 1;
     for(register int tc = 1; tc <= T; ++tc){
@@ -152,23 +139,15 @@ int main() {
         }
 
         for(register int run = 1; run <= k; ++run){
-            //cout << run << "RUN\n";
             playerMove();
-
-            //printPlayer();
 
             attackerMove();
 
-            //printAttacker();
-
             getPoint(run);
-
-            //cout << point << "pt\n";
         }
 
         cout << point << '\n';
     }
-    
 
     return 0;
 }
