@@ -100,7 +100,6 @@ void moveEachTeam(){
 }
 
 pair<int,int> isHit(int y, int x){
-
     for(register int idx = 1; idx < cnt; ++idx){
         for(register int i = 0; i < team[idx].size(); ++i){
             if(team[idx][i].first == y && team[idx][i].second == x){
@@ -143,14 +142,14 @@ void throwBall(int t){
     }
 
     if(val.first > 0){
-        //cout << val.first << "팀 " << val.second << "사람 충돌\n";
         point += val.second * val.second;
         reverse(team[val.first].begin(), team[val.first].end());
     }
 }
 
 int main() {
-    // Please write your code here.
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr);  cin.tie(nullptr);
 
     int T = 1;
     for(int tc = 1; tc <= T; ++tc){
@@ -160,24 +159,15 @@ int main() {
                 cin >> arr[i][j];
 
         grouping();
-        //showEachTeam();
 
         for(register int run = 0; run < k; ++run){
-            //cout << "run: " << " " << run << "\n";
 
             moveEachTeam();
 
-            //cout << "먼저 움직인 후 팀 위치\n";
-            //showEachTeam();
-
             throwBall(run);
-
-            //cout << "공 맞힌 후 팀 위치\n";
-            //showEachTeam();
         }
 
         cout << point << '\n';
-
     }
 
     return 0;
