@@ -16,26 +16,9 @@ int exitX, exitY;
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, 1, -1};
 
-void showArr(){
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            cout << arr[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
-void showPlayer(){
-    for(int idx = 1; idx <= m; ++idx){
-        if(P[idx].died == 1)    cout << idx << "번 죽음\n";
-        else cout << idx << "번: " << P[idx].x << "," << P[idx].y << '\n';
-    }
-}
-
 bool isFinished(){
-    for(int idx = 1; idx <= m; ++idx){
+    for(int idx = 1; idx <= m; ++idx)
         if(P[idx].died == 0) return false;
-    }
     return true;
 }
 
@@ -123,7 +106,7 @@ void rotateRight(int x, int y, int len){
     for(int i = 0; i <= n; ++i)
         for(int j = 0; j <= n; ++j)
             tmp[i][j] = arr[i][j];
-    // arr rotate_right
+
     for(int i = 0; i < len; ++i){
         for(int j = 0; j < len; ++j){
             arr[x + i][y + j] = tmp[x + len - j - 1][y + i];
@@ -151,10 +134,7 @@ void rotatePerson(int x, int y, int len){
                 break;
         }
     }
-
 }
-
-
 
 int main() {
     // Please write your code here.
@@ -174,33 +154,23 @@ int main() {
     for(int run = 1; run <= k; ++run){
         if(isFinished())
             break;
-        //cout << run << "시행 시작\n";
+
         findExit();
 
-        //cout << "각 플레이어 동시에 움직임\n";
         moveAllPlayers();
-        //showPlayer();
 
         int posX = 0, posY = 0, len = 0;
         tie(posX, posY, len) = findPos();
-        //cout << "기준 좌표: " << posX << "," << posY << " len: " << len << "\n";
 
-        //cout << "기준 좌표 회전 시작\n";
         rotateRight(posX, posY, len);
+
         rotatePerson(posX, posY, len);
-
-        //cout << "회전 후 Arr 영역\n";
-        //showArr();
-        //cout << "회전 후 사람\n";
-        //showPlayer();
-
     }
     findExit();
 
     for(int i = 1; i <= m; ++i)
         sum += P[i].dist;
 
-    cout << sum << '\n' << exitX << ' ' << exitY << '\n';
-    // 모든 참가자들의 이동거리 합과 출구 좌표 출력하기.
+    cout << sum << '\n' << exitX << ' ' << exitY << '\n';   // 모든 참가자들의 이동거리 합과 출구 좌표 출력하기.
     return 0;
 }
