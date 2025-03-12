@@ -65,12 +65,10 @@ void push_knight(int idx, int dir){
                 visited[rr][cc] = knight[rr][cc];
                 mov_idx[knight[rr][cc]] = 1;
             }
-            if(d == dir){
-                if(knight[rr][cc] > 0){
-                    q.push({rr, cc});
-                    visited[rr][cc] = knight[rr][cc];
-                    mov_idx[knight[rr][cc]] = 1;
-                }
+            if(d == dir && knight[rr][cc] > 0){
+                q.push({rr, cc});
+                visited[rr][cc] = knight[rr][cc];
+                mov_idx[knight[rr][cc]] = 1;
             }
         }
     }
