@@ -128,7 +128,7 @@ int getScore(){
 }
 
 int main() {
-    ios_base::sync_with_sdtio(false);
+    ios_base::sync_with_stdio(false);
     cout.tie(nullptr);  cin.tie(nullptr);
 
     int T = 1;
@@ -160,7 +160,7 @@ int main() {
 
             if(canPush(idx, dir)){      // vistied[][] > 0 활용하여 OOB나 == 1 찾기.
                 push_start(dir);        // 밀 수 있으면 진짜 밀기. struct || [][]
-                
+
                 calc_HP(idx, dir);
             }
         }
