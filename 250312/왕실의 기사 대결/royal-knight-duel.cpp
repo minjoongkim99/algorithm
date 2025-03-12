@@ -2,8 +2,8 @@
 #include <vector>
 #include <algorithm>
 #include <queue>
-
 using namespace std;
+int L, N, Q; // 주어진 조건
 
 int knight[43][43];
 int arr[43][43];
@@ -15,51 +15,15 @@ struct rectangle{
 rectangle R[33];
 int mov_idx[33];
 
-int L, N, Q;
 int dr[4] = {-1, 0, 1, 0};
 int dc[4] = {0, 1, 0, -1};
 
-void printVisited(){
-    cout << "VISITED MAP\n";
-    for(register int i = 1; i <= L; ++i){
-        for(register int j = 1; j <= L; ++j){
-            cout << visited[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
-void printKnight(){
-    cout << "KNIGHT MAP\n";
-    for(register int i = 1; i <= L; ++i){
-        for(register int j = 1; j <= L; ++j){
-            cout << knight[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
-void printKnightPos(){
-    for(int i = 1; i <= N; ++i){
-        if(R[i].k <= 0) continue;
-        cout << i << "번 좌표: " << R[i].r << "," << R[i].c << '\n';
-    }
-}
-
-void printHP(){
-    for(register int i = 1; i <= N; ++i){
-        cout << i << "번HP: " << R[i].k << ' '; 
-    }
-}
-
 void local_init(){
     fill(&mov_idx[0], &mov_idx[0] + 33, 0);
-    
-    for(register int i = 1; i <= L; ++i){
-        for(register int j = 1; j <= L; ++j){
+
+    for(register int i = 1; i <= L; ++i)
+        for(register int j = 1; j <= L; ++j)
             knight[i][j] = visited[i][j] = 0;
-        }
-    }
 }
 
 void knightToArr(){
@@ -85,8 +49,7 @@ void push_knight(int idx, int dir){
     mov_idx[idx] = 1;
 
     while(!q.empty()){
-        int r = q.front().first;
-        int c = q.front().second;
+        int r = q.front().first, c = q.front().second;
         q.pop();
 
         for(register int d = 0; d < 4; ++d){
@@ -121,17 +84,10 @@ bool canPush(int idx, int dir){
             int rr = i + dr[dir];
             int cc = j + dc[dir];
 
-            if(rr < 1 || rr > L || cc < 1 || cc > L) {
-                //cout << rr << "," << cc << ' ';
-                return false;
-            }
-            if(arr[rr][cc] == 2) {
-                //cout << rr << "," << cc << ' ';
-                return false;
-            }
+            if(rr < 1 || rr > L || cc < 1 || cc > L) return false;
+            if(arr[rr][cc] == 2)    return false;
         }
     }
-
     return true;
 }
 
@@ -172,7 +128,8 @@ int getScore(){
 }
 
 int main() {
-    // Please write your code here.
+    ios_base::sync_with_sdtio(false);
+    cout.tie(nullptr);  cin.tie(nullptr);
 
     int T = 1;
     for(register int tc = 1; tc <= T; ++tc){
@@ -194,37 +151,21 @@ int main() {
 
             int idx, dir;
             cin >> idx >> dir;
-            //cout << "SIMU: " << query << " IDX:" << idx << " DIR:" << dir << '\n';
+
             if(R[idx].k <= 0) continue;
 
             knightToArr();
 
-            //printKnight();
-            
             push_knight(idx, dir);      // BFS 돌리기.
 
-            //printVisited();
-
             if(canPush(idx, dir)){      // vistied[][] > 0 활용하여 OOB나 == 1 찾기.
-                //cout << "PUSH START\n";
-
-                push_start(dir);
-
+                push_start(dir);        // 밀 수 있으면 진짜 밀기. struct || [][]
                 
-
                 calc_HP(idx, dir);
-
-                //printHP();
-
             }
-            //else cout << "CAN'T PUSH\n";
-            //printKnightPos();
-            //printHP();
-            //cout << '\n';
         }
         cout << getScore() << '\n';
     }
-
 
     return 0;
 }
