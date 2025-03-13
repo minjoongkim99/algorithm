@@ -135,6 +135,8 @@ void bfs(){
 
     while(!q.empty()){
         int y = q.front().first, x = q.front().second;
+        if(y == ty && x == tx)
+            break;
         q.pop();
 
         for(register int dir = 0; dir < 8; dir = dir + 2){
