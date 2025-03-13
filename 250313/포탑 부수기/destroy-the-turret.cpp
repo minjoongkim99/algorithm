@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <iostream>
 #include <queue>
 #include <algorithm>
@@ -12,43 +11,17 @@ int visited[15][15];
 int pre[15][15][2];
 int attacked[15][15];
 
-
 int ddy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 int ddx[8] = {1, 1, 0, -1, -1, -1, 0, 1};
 
 int ay = -1, ax = -1, ty = -1, tx = -1;
 
-void printPos(){
-    cout << "공격자: " << ay << "," << ax << " 피해자: " << ty << "," << tx << "\n";
-}
-
-void printArr(){
-    for(int i = 0; i < N; ++i){
-        for(int j = 0; j < M; ++j){
-            cout << arr[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
-void printVisited(){
-    cout << "방문지도\n";
-    for(int i = 0; i < N; ++i){
-        for(int j = 0; j < M; ++j){
-            cout << visited[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
 int canEnd(){
     int cnt = 0;
-    for(int i = 0; i < N; ++i){
-        for(int j = 0; j < M; ++j){
+    for(int i = 0; i < N; ++i)
+        for(int j = 0; j < M; ++j)
             if(arr[i][j] > 0)
                 cnt++;
-        }
-    }
     return cnt;
 }
 
@@ -63,7 +36,7 @@ void local_init(){
 
 void findAttacker(){
     int mn = 1000000;
-    int ny = -1, nx = -1, nr = 0;
+    int ny = -1, nx = -1, nr = -1;
 
     for(int i = N - 1; i >= 0; --i){
         for(int j = M - 1; j >= 0; --j){
@@ -86,6 +59,14 @@ void findAttacker(){
                         ny = i;
                         nx = j;
                     }
+                    else if(i + j == ny + nx){
+                        if(j > nx){
+                        nr = recent[i][j];
+                        ny = i;
+                        nx = j;
+                        }
+
+                    }
                 }
             }
         }
@@ -95,7 +76,6 @@ void findAttacker(){
     ax = nx;
 }
 
-// recent 갱신해야함.
 void findTarget(){
     int mx = 0;
     int ny = -1, nx = -1, nr = 100000;
@@ -103,6 +83,8 @@ void findTarget(){
     for(int i = 0; i < N; ++i){
         for(int j = 0; j < M; ++j){
             if(arr[i][j] <= 0) continue;
+            if(i == ay && j == ax) continue;
+
             if(arr[i][j] > mx){
                 mx = arr[i][j];
                 nr = recent[i][j];
@@ -120,6 +102,14 @@ void findTarget(){
                         nr = recent[i][j];
                         ny = i;
                         nx = j;
+                    }
+                    else if(i + j == ny + nx){
+                        if(j < nx){
+                        nr = recent[i][j];
+                        ny = i;
+                        nx = j;
+                        }
+
                     }
                 }
             }
@@ -240,7 +230,8 @@ void potan(){
 }
 
 void repair(){
-    attacked[ay][ax] = 1;
+    attacked[ay][ax] = attacked[ty][tx] = 1;
+
     for(int i = 0; i < N; ++i){
         for(int j = 0; j < M; ++j){
             if(arr[i][j] > 0 && attacked[i][j] == 0)
@@ -264,35 +255,27 @@ int main() {
             }
 
         for(register int run = 1; run <= K; ++run){
-            //if(canEnd() < 2)
-            //    break;
+            if(canEnd() < 2)
+                break;
 
             local_init();
 
             findAttacker();
 
-            findTarget();
-
-            //printPos();
-
             update(run);
 
-            //printArr();
+            findTarget();
 
             bfs();
 
-            //printVisited();
-
-            if(visited[ty][tx] > 0)
+            if(visited[ty][tx] > 0){
                 razer();
-            else 
+            }
+            else {
                 potan();
-
+            }
+            
             repair();
-
-            //cout << "회복 후\n";
-
-            //printArr();
         }
 
         int val = 0;
