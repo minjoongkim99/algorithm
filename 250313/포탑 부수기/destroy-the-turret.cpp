@@ -197,7 +197,6 @@ void razer(){
 
         attacked[ny][nx] = 1;
 
-
         cy = ny;
         cx = nx;
     }
@@ -237,7 +236,6 @@ void potan(){
 
             if(arr[yy][xx] < 0)
                 arr[yy][xx] = 0;
-
     }
 }
 
@@ -266,8 +264,8 @@ int main() {
             }
 
         for(register int run = 1; run <= K; ++run){
-            if(canEnd() < 2)
-                break;
+            //if(canEnd() < 2)
+            //    break;
 
             local_init();
 
