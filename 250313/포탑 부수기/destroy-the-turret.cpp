@@ -62,7 +62,7 @@ void local_init(){
 }
 
 void findAttacker(){
-    int mn = 10000;
+    int mn = 1000000;
     int ny = -1, nx = -1, nr = 0;
 
     for(int i = N - 1; i >= 0; --i){
@@ -82,6 +82,7 @@ void findAttacker(){
                 }
                 else if(recent[i][j] == nr){
                     if(i + j > ny + nx){
+                        nr = recent[i][j];
                         ny = i;
                         nx = j;
                     }
@@ -116,6 +117,7 @@ void findTarget(){
                 }
                 else if(recent[i][j] == nr){
                     if(i + j < ny + nx){
+                        nr = recent[i][j];
                         ny = i;
                         nx = j;
                     }
