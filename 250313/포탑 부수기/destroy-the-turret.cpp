@@ -24,7 +24,7 @@ void printPos(){
 
 void printArr(){
     for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
+        for(int j = 0; j < M; ++j){
             cout << arr[i][j] << '\t';
         }
         cout << '\n';
@@ -34,7 +34,7 @@ void printArr(){
 void printVisited(){
     cout << "방문지도\n";
     for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
+        for(int j = 0; j < M; ++j){
             cout << visited[i][j] << '\t';
         }
         cout << '\n';
@@ -44,7 +44,7 @@ void printVisited(){
 int canEnd(){
     int cnt = 0;
     for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
+        for(int j = 0; j < M; ++j){
             if(arr[i][j] > 0)
                 cnt++;
         }
@@ -54,7 +54,7 @@ int canEnd(){
 
 void local_init(){
     for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
+        for(int j = 0; j < M; ++j){
             attacked[i][j] = 0;
             visited[i][j] = 0;
         }
@@ -66,7 +66,7 @@ void findAttacker(){
     int ny = -1, nx = -1, nr = 0;
 
     for(int i = N - 1; i >= 0; --i){
-        for(int j = N - 1; j >= 0; --j){
+        for(int j = M - 1; j >= 0; --j){
             if(arr[i][j] <= 0) continue;
             if(arr[i][j] < mn){
                 mn = arr[i][j];
@@ -100,7 +100,7 @@ void findTarget(){
     int ny = -1, nx = -1, nr = 100000;
 
     for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
+        for(int j = 0; j < M; ++j){
             if(arr[i][j] <= 0) continue;
             if(arr[i][j] > mx){
                 mx = arr[i][j];
@@ -157,10 +157,10 @@ void bfs(){
             }
 
             if(xx < 0){
-                xx = N + xx;
+                xx = M + xx;
             }
-            else if(xx >= N){
-                xx = xx % N;
+            else if(xx >= M){
+                xx = xx % M;
             }
 
             if(arr[yy][xx] <= 0) continue;
@@ -221,10 +221,10 @@ void potan(){
             }
 
             if(xx < 0){
-                xx = N + xx;
+                xx = M + xx;
             }
-            else if(xx >= N){
-                xx = xx % N;
+            else if(xx >= M){
+                xx = xx % M;
             }
 
             if(arr[yy][xx] <= 0) continue;
@@ -242,7 +242,7 @@ void potan(){
 void repair(){
     attacked[ay][ax] = 1;
     for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
+        for(int j = 0; j < M; ++j){
             if(arr[i][j] > 0 && attacked[i][j] == 0)
                 arr[i][j]++;
         }
@@ -258,7 +258,7 @@ int main() {
 
         cin >> N >> M >> K;
         for(register int i = 0; i < N; ++i)
-            for(register int j = 0; j < N; ++j){
+            for(register int j = 0; j < M; ++j){
                 cin >> arr[i][j];
                 recent[i][j] = 0;
             }
@@ -297,7 +297,7 @@ int main() {
 
         int val = 0;
         for(int i = 0; i < N; ++i){
-            for(int j = 0; j < N; ++j)
+            for(int j = 0; j < M; ++j)
                 if(arr[i][j] > val)
                     val = arr[i][j];
         }
