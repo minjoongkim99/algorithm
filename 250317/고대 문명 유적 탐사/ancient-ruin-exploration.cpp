@@ -2,10 +2,10 @@
 #include <vector>
 #include <algorithm>
 #include <queue>
-
 using namespace std;
 
 int K, M;   // 반복 횟수, 유물 조각 개수
+
 int arr[5][5];
 int test[5][5];
 int visited[5][5];
@@ -15,20 +15,6 @@ int rr = 0, ry = 0, rx = 0;
 
 int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
-
-
-void showPos(){
-    cout << "회전:" << rr << " 좌표:" << ry << "," << rx << '\n';
-}
-
-void showArr(){
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
-            cout << arr[i][j] << ' ';
-        }
-        cout << "\n";
-    }
-}
 
 void arrToTest(){
     for(int i = 0; i < 5; ++i)
@@ -40,9 +26,6 @@ void TestToArr(){
         for(int j = 0; j < 5; ++j)
             arr[i][j] = test[i][j];
 }
-
-
-
 
 void rotate(int rot, int y, int x){
     int tmp[5][5];
@@ -161,8 +144,6 @@ void find_RR_RY_RX(){
                     nr = r;
                     ny = i;
                     nx = j;
-
-                    //cout << val << " " << nr << " " << ny << " " << nx << "\n";
                 }
             }
         }
@@ -217,7 +198,6 @@ int main() {
         }
 
         // input END
-
         int point = 0;
         for(int run = 1; run <= K; ++run){
             // local_init();
@@ -231,9 +211,6 @@ int main() {
             rotate(rr, ry, rx);
 
             TestToArr();
-
-            //showPos();
-            //showArr();
 
             while(true){
                 int sum = deleteVal();
