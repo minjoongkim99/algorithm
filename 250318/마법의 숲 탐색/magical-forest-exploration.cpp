@@ -3,21 +3,22 @@
 #include <algorithm>
 using namespace std;
 
-int arr[75][75];
-int escape[75][75];
-int visited[75][75];
+int R, C, K;        // 입력 상수들을 맨 위로 놓자
+
+int dy[4] = {-1, 0, 1, 0};      // dy, dx 잘 안보니깐, 위에다가
+int dx[4] = {0, 1, 0, -1};      // dy, dx 잘 안보니깐, 위에다가
+
+int arr[75][75];                // use variables
+int escape[75][75];             // use variables
+int visited[75][75];            // use variables
 
 struct ghost{
     int y, x, dir;
 };
-ghost G[1002];
-int lastPos[1002][2];
+ghost G[1002];          // 구조체와 구조체 배열
+int lastPos[1002][2];   // 구조체에 못 담은 정보(변수) 는 int 배열[idx 크기];
 
-int R, C, K;
-int sum = 0;
-
-int dy[4] = {-1, 0, 1, 0};
-int dx[4] = {0, 1, 0, -1};
+int sum = 0;            // output
 
 bool canDown(int idx){
     int y1 = G[idx].y + 2, x1 = G[idx].x;
@@ -166,12 +167,10 @@ int main() {
     // Please write your code here.
     cin >> R >> C >> K;
 
-
-    for(int run = 1; run <= K; ++run){        
+    for(int run = 1; run <= K; ++run){
         int c, d;
         cin >> c >> d;
-        G[idx].y = -1;      G[idx].x = c;      G[idx].dir = d;
-
+        G[run].y = -1;      G[run].x = c;       G[run].dir = d;
 
         moveGhost(run);
 
