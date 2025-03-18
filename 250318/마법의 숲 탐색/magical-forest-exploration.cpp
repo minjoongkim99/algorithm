@@ -19,34 +19,11 @@ int sum = 0;
 int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
 
-void showGhost(int run){
-    for(int i = 1 ; i <= run; ++i){
-        cout << i << ": " << G[i].y << " " << G[i].x << " " << G[i].dir << "\n";
-    }
-}
-
-void showArr(){
-    for(int i = 1; i <= R; ++i){
-        for(int j = 1; j <= C; ++j){
-            cout << arr[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-void showEscape(){
-    cout << "탈출구\n";
-    for(int i = 1; i <= R; ++i){
-        for(int j = 1; j <= C; ++j){
-            cout << escape[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
 bool canDown(int idx){
     int y1 = G[idx].y + 2, x1 = G[idx].x;
     int y2 = G[idx].y + 1, x2 = G[idx].x - 1;
     int y3 = G[idx].y + 1, x3 = G[idx].x + 1;
+
     if(arr[y1][x1] || arr[y2][x2] || arr[y3][x3]) return false;
     if(y1 > R || x1 < 1 || x1 > C) return false;
     if(y2 > R || x2 < 1 || x2 > C) return false;
@@ -83,7 +60,6 @@ void moveLeft(int idx){
 }
 
 bool canRight(int idx){
-
     int y1 = G[idx].y - 1, x1 = G[idx].x + 1;
     int y2 = G[idx].y, x2 = G[idx].x + 2;
     int y3 = G[idx].y + 1, x3 = G[idx].x + 1;
@@ -124,9 +100,7 @@ void moveGhost(int idx){
             flag = 1;
             moveRight(idx);
         }
-        //t++;
     }
-    //cout << idx << ", " << t << "\n";
 }
 
 void fillToArr(int idx){
@@ -190,7 +164,6 @@ void bfs(int i, int j, int idx){
 
 int main() {
     // Please write your code here.
-
     cin >> R >> C >> K;
     for(int idx = 1; idx <= K; ++idx){
         int c, d;
@@ -201,31 +174,22 @@ int main() {
     }
 
     for(int run = 1; run <= K; ++run){
-        //cout << run << "RUN START\n";
 
         moveGhost(run);
 
-        //showGhost(run);
-
         if(G[run].y <= 1 || G[run].y >= R){
-            //cout << "ARR WASH\n";
             flushArr_Exit();
             continue;
         }
         else{
-            fillToArr(run); //G[run].y x 같이고 4방향 fill.
+            fillToArr(run);         //G[run].y x 같이고 4방향 fill.
             bfs(G[run].y, G[run].x, run);
         }
-
-        //showArr();
-
-        //showEscape();
-
     }
 
-    for(int i = 1; i <= K; ++i){
+    for(int i = 1; i <= K; ++i)
         sum += lastPos[i][0];
-    }
+    
     cout << sum << '\n';
     return 0;
 }
