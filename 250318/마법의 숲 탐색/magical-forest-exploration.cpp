@@ -165,15 +165,13 @@ void bfs(int i, int j, int idx){
 int main() {
     // Please write your code here.
     cin >> R >> C >> K;
-    for(int idx = 1; idx <= K; ++idx){
+
+
+    for(int run = 1; run <= K; ++run){        
         int c, d;
         cin >> c >> d;
-        G[idx].y = -1;
-        G[idx].x = c;
-        G[idx].dir = d;
-    }
+        G[idx].y = -1;      G[idx].x = c;      G[idx].dir = d;
 
-    for(int run = 1; run <= K; ++run){
 
         moveGhost(run);
 
