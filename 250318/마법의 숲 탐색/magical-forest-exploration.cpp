@@ -130,6 +130,7 @@ void bfs(int i, int j, int idx){
 
     while(!q.empty()){
         int y = q.front().first, x = q.front().second;
+        if(y == R) break;                   /// 크랙. 시간 줄이기....
         q.pop();
 
         for(int dir = 0; dir < 4; ++dir){
@@ -180,7 +181,7 @@ int main() {
         }
         else{
             fillToArr(run);         //G[run].y x 같이고 4방향 fill.
-            bfs(G[run].y, G[run].x, run);
+            bfs(G[run].y, G[run].x, run);           // bfs() while(true) {break;} while 빠져나가는게 베스트.
         }
     }
 
