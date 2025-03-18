@@ -21,7 +21,10 @@ bool canDown(int idx){
     int y3 = G[idx].y + 1, x3 = G[idx].x + 1;
     if(arr[y1][x1] || arr[y2][x2] || arr[y3][x3]) return false;
     if(y1 < 1 || y1 > n || x1 < 1 || x1 > n) return false;
-    f(y1 < 1 || y1 > n || x1 < 1 || x1 > n) return false;
+    if(y2 < 1 || y2 > n || x2 < 1 || x2 > n) return false;
+    if(y3 < 1 || y3 > n || x3 < 1 || x3 > n) return false;
+
+    return true;
 }
 
 void moveDown(int idx){
@@ -29,11 +32,24 @@ void moveDown(int idx){
 }
 
 bool canLeft(int idx){
+    int y1 = G[idx].y - 1, x1 = G[idx].x - 1;
+    int y2 = G[idx].y, x2 = G[idx].x - 2;
+    int y3 = G[idx].y + 1, x3 = G[idx].x - 1;
+    int y4 = G[idx].y + 1, x4 = G[idx].x - 2;
+    int y5 = G[idx].y + 2, x3 = G[idx].x - 1;
 
+    if(arr[y1][x1] || arr[y2][x2] || arr[y3][x3] || arr[y4][x4] || arr[y5][x5]) return false;
+    if(y1 < 1 || y1 > n || x1 < 1 || x1 > n) return false;
+    if(y2 < 1 || y2 > n || x2 < 1 || x2 > n) return false;
+    if(y3 < 1 || y3 > n || x3 < 1 || x3 > n) return false;
+    if(y3 < 1 || y3 > n || x3 < 1 || x3 > n) return false;
+
+    return true;
 }
 
 void moveLeft(int idx){
-
+    G[idx].y++;
+    G[idx].x--;
 }
 
 bool canRight(int idx){
@@ -41,7 +57,8 @@ bool canRight(int idx){
 }
 
 void moveRight(int idx){
-
+    G[idx].y++;
+    G[idx].x++;
 }
 
 void moveGhost(int idx){
