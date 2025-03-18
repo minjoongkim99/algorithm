@@ -1,8 +1,11 @@
 #include <iostream>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int arr[75][75];
 int escape[75][75];
+int visited[75][75];
 
 struct ghost{
     int y, x, dir;
@@ -11,18 +14,43 @@ ghost G[1002];
 int lastPos[1002][2];
 
 int R, C, K;
+int sum = 0;
 
 int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
+
+void showGhost(int run){
+    for(int i = 1 ; i <= run; ++i){
+        cout << i << ": " << G[i].y << " " << G[i].x << " " << G[i].dir << "\n";
+    }
+}
+
+void showArr(){
+    for(int i = 1; i <= R; ++i){
+        for(int j = 1; j <= C; ++j){
+            cout << arr[i][j] << ' ';
+        }
+        cout << '\n';
+    }
+}
+void showEscape(){
+    cout << "탈출구\n";
+    for(int i = 1; i <= R; ++i){
+        for(int j = 1; j <= C; ++j){
+            cout << escape[i][j] << ' ';
+        }
+        cout << '\n';
+    }
+}
 
 bool canDown(int idx){
     int y1 = G[idx].y + 2, x1 = G[idx].x;
     int y2 = G[idx].y + 1, x2 = G[idx].x - 1;
     int y3 = G[idx].y + 1, x3 = G[idx].x + 1;
     if(arr[y1][x1] || arr[y2][x2] || arr[y3][x3]) return false;
-    if(y1 < 1 || y1 > n || x1 < 1 || x1 > n) return false;
-    if(y2 < 1 || y2 > n || x2 < 1 || x2 > n) return false;
-    if(y3 < 1 || y3 > n || x3 < 1 || x3 > n) return false;
+    if(y1 > R || x1 < 1 || x1 > C) return false;
+    if(y2 > R || x2 < 1 || x2 > C) return false;
+    if(y3 > R || x3 < 1 || x3 > C) return false;
 
     return true;
 }
@@ -36,13 +64,14 @@ bool canLeft(int idx){
     int y2 = G[idx].y, x2 = G[idx].x - 2;
     int y3 = G[idx].y + 1, x3 = G[idx].x - 1;
     int y4 = G[idx].y + 1, x4 = G[idx].x - 2;
-    int y5 = G[idx].y + 2, x3 = G[idx].x - 1;
+    int y5 = G[idx].y + 2, x5 = G[idx].x - 1;
 
     if(arr[y1][x1] || arr[y2][x2] || arr[y3][x3] || arr[y4][x4] || arr[y5][x5]) return false;
-    if(y1 < 1 || y1 > n || x1 < 1 || x1 > n) return false;
-    if(y2 < 1 || y2 > n || x2 < 1 || x2 > n) return false;
-    if(y3 < 1 || y3 > n || x3 < 1 || x3 > n) return false;
-    if(y3 < 1 || y3 > n || x3 < 1 || x3 > n) return false;
+    if(y1 > R || x1 < 1 || x1 > C) return false;
+    if(y2 > R || x2 < 1 || x2 > C) return false;
+    if(y3 > R || x3 < 1 || x3 > C) return false;
+    if(y4 > R || x4 < 1 || x4 > C) return false;
+    if(y5 > R || x5 < 1 || x5 > C) return false;
 
     return true;
 }
@@ -50,35 +79,62 @@ bool canLeft(int idx){
 void moveLeft(int idx){
     G[idx].y++;
     G[idx].x--;
+    G[idx].dir = (G[idx].dir + 3) % 4;
 }
 
 bool canRight(int idx){
 
+    int y1 = G[idx].y - 1, x1 = G[idx].x + 1;
+    int y2 = G[idx].y, x2 = G[idx].x + 2;
+    int y3 = G[idx].y + 1, x3 = G[idx].x + 1;
+    int y4 = G[idx].y + 1, x4 = G[idx].x + 2;
+    int y5 = G[idx].y + 2, x5 = G[idx].x + 1;
+
+    if(arr[y1][x1] || arr[y2][x2] || arr[y3][x3] || arr[y4][x4] || arr[y5][x5]) return false;
+    if(y1 > R || x1 < 1 || x1 > C) return false;
+    if(y2 > R || x2 < 1 || x2 > C) return false;
+    if(y3 > R || x3 < 1 || x3 > C) return false;
+    if(y4 > R || x4 < 1 || x4 > C) return false;
+    if(y5 > R || x5 < 1 || x5 > C) return false;
+
+    return true;
 }
 
 void moveRight(int idx){
     G[idx].y++;
     G[idx].x++;
+    G[idx].dir = (G[idx].dir + 1) % 4;
 }
 
 void moveGhost(int idx){
     int flag = 1;
+    int t = 0;
     while(flag == 1){
         flag = 0;
 
-        if(canDown()){
+        if(canDown(idx)){
             flag = 1;
-            moveDown();
+            moveDown(idx);
         }
-        else if(canLeft()){
+        else if(canLeft(idx)){
             flag = 1;
-            moveLeft();
+            moveLeft(idx);
         }
-        else if(canRight()){
+        else if(canRight(idx)){
             flag = 1;
-            moveRight();
+            moveRight(idx);
         }
+        //t++;
     }
+    //cout << idx << ", " << t << "\n";
+}
+
+void fillToArr(int idx){
+    arr[G[idx].y][G[idx].x] = idx;
+    for(int dir = 0; dir < 4; ++dir){
+        arr[G[idx].y + dy[dir]][G[idx].x + dx[dir]] = idx;
+    }
+    escape[G[idx].y + dy[G[idx].dir]][G[idx].x + dx[G[idx].dir]] = idx;
 }
 
 void flushArr_Exit(){
@@ -87,6 +143,49 @@ void flushArr_Exit(){
             arr[i][j] = escape[i][j] = 0;
         }
     }
+}
+
+void bfs(int i, int j, int idx){
+    fill(&visited[0][0], &visited[0][0] + 75 * 75, 0);
+
+    queue<pair<int,int>> q;
+    q.push({i, j});
+    visited[i][j] = 1;
+    int ny = i, nx = j;
+
+    while(!q.empty()){
+        int y = q.front().first, x = q.front().second;
+        q.pop();
+
+        for(int dir = 0; dir < 4; ++dir){
+            int yy = y + dy[dir];
+            int xx = x + dx[dir];
+            if(yy < 1 || yy > R || xx < 1 || xx > C) continue;
+            if(visited[yy][xx]) continue;
+            if(arr[yy][xx] == 0) continue;      //
+
+            if(arr[yy][xx] == arr[y][x]){
+                q.push({yy, xx});
+                visited[yy][xx] = 1;
+                if(yy > ny){
+                    ny = yy;
+                    nx = xx;
+                }
+            }
+            else if(escape[y][x] > 0){
+                q.push({yy, xx});
+                visited[yy][xx] = 1;
+                if(ny > ny){
+                    ny = yy;
+                    nx = xx;
+                }
+            }
+            
+        }
+    }
+
+    lastPos[idx][0] = ny;
+    lastPos[idx][1] = nx;
 }
 
 int main() {
@@ -102,17 +201,31 @@ int main() {
     }
 
     for(int run = 1; run <= K; ++run){
-        //moveGhost(run);
+        //cout << run << "RUN START\n";
+
+        moveGhost(run);
+
+        //showGhost(run);
 
         if(G[run].y <= 1 || G[run].y >= R){
+            //cout << "ARR WASH\n";
             flushArr_Exit();
             continue;
         }
         else{
-            // fillToArr(run); G[run].y x 같이고 4방향 fill.
-            bfs(G[run].y, G[run].x);
+            fillToArr(run); //G[run].y x 같이고 4방향 fill.
+            bfs(G[run].y, G[run].x, run);
         }
 
+        //showArr();
+
+        //showEscape();
+
     }
+
+    for(int i = 1; i <= K; ++i){
+        sum += lastPos[i][0];
+    }
+    cout << sum << '\n';
     return 0;
 }
