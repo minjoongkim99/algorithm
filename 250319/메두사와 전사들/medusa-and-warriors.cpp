@@ -54,7 +54,7 @@ int sight = 0;
 void showStone(int dir){
     for(int i = 0; i < N; ++i){
         for(int j = 0; j < N; ++j){
-            cout << stone[i][j][dir] << ' ';
+            cout << stone[i][j][dir] << '\t';
         }
         cout << '\n';
     }
@@ -91,7 +91,46 @@ void attackFighter(){
 }
 
 int makeStone(int see){
-    
+
+    int ddy[4] = {-1, 0, 1, 0};
+    int ddx[4] = {0, 1, 0, -1};
+    stone[sy][sx][see] = -1;
+    queue<pair<int,int>> straight;
+    queue<pair<int,int>> left;
+    queue<pair<int,int>> right;
+
+    for(int i = 1; i <= N; ++i){
+        int yy = sy + i * ddy[see];
+        int xx = sx + i * ddx[see];
+        
+        if(yy < 0 || yy >= N || xx < 0 || xx >= N) break;
+        if(stone[yy][xx][see] > 0){
+            cout << "STRIGHT: " << yy << "," << xx << "\n";
+            straight.push({yy, xx});
+        }
+        stone[yy][xx][see] = -1;
+
+        for(int j = 0; j <= i; ++j){
+            int yyy = yy + j * ddy[(see + 3) % 4];
+            int xxx = xx + j * ddx[(see + 3) % 4];
+            if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) continue;
+            if(stone[yyy][xxx][see] > 0){
+                cout << "LEFT: " << yyy << "," << xxx << "\n";
+                left.push({yyy, xxx});
+            }
+            stone[yyy][xxx][see] = -1;
+        }
+        for(int j = 0; j <= i; ++j){
+            int yyy = yy + j * ddy[(see + 1) % 4];
+            int xxx = xx + j * ddx[(see + 1) % 4];
+            if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) continue;
+            if(stone[yyy][xxx][see] > 0){
+                cout << "RIGHTT: " << yyy << "," << xxx << "\n";
+                right.push({yyy, xxx});
+            }
+            stone[yyy][xxx][see] = -1;
+        }
+    }
     
     return -1;
 }
@@ -99,12 +138,21 @@ int makeStone(int see){
 void seeMedusa(){
     int cnt = 0;
 
-    for(int dir = 0; dir < 8; dir = dir + 2){
+    for(int dir = 0; dir < 4; ++dir){
+
+        for(int idx = 1; idx <= M; ++idx){
+            if(F[idx].died == 1) continue;
+            stone[F[idx].y][F[idx].x][dir] = idx;
+        }
+
         int val = makeStone(dir);
         if(val > cnt){
             cnt = val;
             sight = dir;
         }
+        cout << dir << "방향\n";
+        showStone(dir);
+        cout << "\n";
     }
 
     // sight 갱신하기.
@@ -241,7 +289,8 @@ int main() {
                 cout << 0 << '\n';
                 break;
             }
-
+            
+            cout << "\n";
             t++;        // erase
             // 모든 전사가 이동한 거리의 합, 메두사로 인해 돌이 된 전사의 수, 메두사를 공격한 전사의 수,
             // 공원 도착 시 0 출력, 공원으로 못간다면 -1 출력.
