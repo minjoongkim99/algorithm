@@ -2,9 +2,7 @@
 #include <cmath>
 #include <algorithm>
 using namespace std;
-
-
-int n, m, h, k; // 격자, 도망자 수, 나무 수, k 턴
+int n, m, h, k;             // 격자, 도망자 수, 나무 수, k 턴
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
 
@@ -23,25 +21,11 @@ int flag = 0;
 
 int point = 0; // output
 
-void showTree(){
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            cout << tree[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
-void showRunner(){
+bool canBreak(){
     for(int idx = 1; idx <= m; ++idx){
-        if(R[idx].died == 1)
-            cout << idx << " DIED\n";
-        else cout << idx << ": " << R[idx].x << " " << R[idx].y << " DIR:" << R[idx].dir << '\n';
+        if(R[idx].died == 0) return false;
     }
-}
-
-void showS(){
-    cout << sx << "," << sy << " DIR:" << sdir << "\n";
+    return true;
 }
 
 void moveR(){
@@ -67,9 +51,7 @@ void moveR(){
     }
 }
 
-// cur, len, change
 void move1(){
-    //cout << "FLAG1\n";
     sx = sx + dx[sdir];
     sy = sy + dy[sdir];
 
@@ -93,10 +75,8 @@ void move1(){
 }
 
 void move2(){
-    //cout << "FLAG2\n";
     visited[sx][sy] = 1;
    
-
     int nx = sx + dx[sdir];
     int ny = sy + dy[sdir];
     
@@ -110,12 +90,9 @@ void move2(){
         sdir = (sdir + 3) % 4;
     }
 
-
     if(sx == (n / 2) + 1 && sy == (n / 2) + 1){
-        flag = 0;
-        sdir = 0;
-        len = 1;
-        cur = 0;
+        flag = 0;   sdir = 0;
+        len = 1;    cur = 0;
         change = 0;
     }
 }
@@ -167,16 +144,16 @@ int main() {
         }
 
         sx = sy = (n / 2) + 1; sdir = 0;
-        flag = 0;
 
-        for(int run = 1; run <= k; ++run){
+        for(int run = 1; run <= k; ++run){ 
+            if(canBreak())
+                break;
             moveR();
+            
 
             moveS();
-            //showS();
 
             attack(run);
-
         }
 
         cout << point << '\n';
