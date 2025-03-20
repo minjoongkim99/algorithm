@@ -106,7 +106,7 @@ void move2(){
     if(nx < 1 || nx > n || ny < 1 || ny > n){
         sdir = (sdir + 3) % 4;
     }
-    else if(visited[nx][ny]){
+    if(visited[nx][ny]){
         sdir = (sdir + 3) % 4;
     }
 
@@ -174,7 +174,6 @@ int main() {
             moveS();
 
             attack(run);
-
         }
 
         cout << point << '\n';
