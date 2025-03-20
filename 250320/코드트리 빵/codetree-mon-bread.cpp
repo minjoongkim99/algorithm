@@ -2,9 +2,7 @@
 #include <queue>
 #include <algorithm>
 using namespace std;
-
 int n, m;
-
 int dy[4] = {-1, 0, 0, 1};
 int dx[4] = {0, -1, 1, 0};
 
@@ -77,7 +75,7 @@ void nextStep(int idx){
 void movePlayer(int t){
     for(int i = 1; i < t; ++i){
         if(P[i].died == 1) continue;
-        
+
         fill(&pre[0][0][0], &pre[0][0][0] + 17 * 17 * 2, 0);
         bfs(P[i].cy, P[i].cx, P[i].ey, P[i].ex);
 
@@ -133,7 +131,7 @@ int main() {
 
     int t = 1;
     while(true){          // 수정
-         movePlayer(min(t, m + 1));
+        movePlayer(min(t, m + 1));
 
         makeBlind();
 
