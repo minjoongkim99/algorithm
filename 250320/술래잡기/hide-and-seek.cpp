@@ -35,15 +35,18 @@ void moveR(){
         int dist = abs(R[idx].x - sx) + abs(R[idx].y - sy);
         if(dist > 3) continue;
 
+        // 현재 구조체 배열 idx가 가지고 있는 방향으로 활용한다
         int nx = R[idx].x + dx[R[idx].dir];
         int ny = R[idx].y + dy[R[idx].dir];
 
+        // OOB이면 방향을 틀고 다시 curX,curY로부터 방향벡터를 계산하면 nx, ny는 무엇이 되는가?
         if(nx < 1 || nx > n || ny < 1 || ny > n){
             R[idx].dir = (R[idx].dir + 2) % 4;
             nx = R[idx].x + dx[R[idx].dir];
             ny = R[idx].y + dy[R[idx].dir];
         }
-        
+
+        // OOB아니거나, OOB여도 방향 처리를 했으니 무조건 격자 내로 들어온다
         if(nx == sx && ny == sy) continue;
 
         R[idx].x = nx;
@@ -52,16 +55,20 @@ void moveR(){
 }
 
 void move1(){
+    //현재 기준 방향벡터 활용하여 한 칸 전진
     sx = sx + dx[sdir];
     sy = sy + dy[sdir];
-
+    
+    // 한 칸 전진할 때마다 cur 증가
     cur++;
 
+    // cur이 주어진 len만큼 갔으면, cur 초기화, 방향 변화, change 1 증가
     if(cur == len){
         cur = 0;
         sdir = (sdir + 1) % 4;
         change++;
     }
+    // change == 2는 두 번 갔음. 이제 len을 증가시키고 변화를 0으로 만듬
     if(change == 2){
         len++;
         change = 0;
@@ -75,14 +82,17 @@ void move1(){
 }
 
 void move2(){
+    // 현 지점 방문 처리.
     visited[sx][sy] = 1;
    
+    // 한 칸 전진.
     int nx = sx + dx[sdir];
     int ny = sy + dy[sdir];
     
     sx = nx;
     sy = ny;
 
+    // 다음 칸을 미리 보고, OOB이거나 visited[][]라면 미리 방향을 선제적으로 전환
     nx = sx + dx[sdir];
     ny = sy + dy[sdir];
 
@@ -107,6 +117,8 @@ void moveS(){
 void attack(int t){
     int cnt = 0; 
 
+    // 길이를 가진 방향 벡터. 특정 방향으로만 지속 전진한다.
+    // 4방향을 길이만큼 탐색하려면 for(dir = 0 ~ 4) 가 어디에 위치해 있느냐에 따라 변화됨.
     for(int len = 0; len < 3; ++len){
         int xx = sx + len * dx[sdir];
         int yy = sy + len * dy[sdir];
@@ -126,7 +138,6 @@ void attack(int t){
     point += t * cnt;
 }
 
-// 1-indexed
 int main() {
     // Please write your code here.
     int T = 1;
@@ -150,7 +161,6 @@ int main() {
                 break;
             moveR();
             
-
             moveS();
 
             attack(run);
@@ -158,5 +168,6 @@ int main() {
 
         cout << point << '\n';
     }
+
     return 0;
 }
