@@ -67,8 +67,9 @@ void moveR(){
     }
 }
 
-// cur len, change
+// cur, len, change
 void move1(){
+    //cout << "FLAG1\n";
     sx = sx + dx[sdir];
     sy = sy + dy[sdir];
 
@@ -92,23 +93,23 @@ void move1(){
 }
 
 void move2(){
+    //cout << "FLAG2\n";
     visited[sx][sy] = 1;
+   
 
     int nx = sx + dx[sdir];
     int ny = sy + dy[sdir];
-
+    
     sx = nx;
-    sy = nx;
+    sy = ny;
 
     nx = sx + dx[sdir];
     ny = sy + dy[sdir];
 
-    if(nx < 1 || nx > n || ny < 1 || ny > n){
+    if(nx < 1 || nx > n || ny < 1 || ny > n || visited[nx][ny] == 1){
         sdir = (sdir + 3) % 4;
     }
-    if(visited[nx][ny]){
-        sdir = (sdir + 3) % 4;
-    }
+
 
     if(sx == (n / 2) + 1 && sy == (n / 2) + 1){
         flag = 0;
@@ -166,14 +167,16 @@ int main() {
         }
 
         sx = sy = (n / 2) + 1; sdir = 0;
-
+        flag = 0;
 
         for(int run = 1; run <= k; ++run){
             moveR();
 
             moveS();
+            //showS();
 
             attack(run);
+
         }
 
         cout << point << '\n';
