@@ -17,32 +17,14 @@ struct player{
 };
 player P[32];
 
-void showArr(){
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            cout << arr[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
-void showPlayer(){
-    for(int i = 1; i <= m; ++i){
-        if(P[i].died == 1) cout << i << " DIED\n";
-        else cout << i << ": "<< P[i].cy << "," << P[i].cx << "\n";
-    }
-}
-
 bool canBreak(){
-    for(int i = 1; i <= m; ++i){
+    for(int i = 1; i <= m; ++i)
         if(P[i].died == 0) return false;
-    }
     return true;
 }
 
 int bfs(int cy, int cx, int ey, int ex){
     fill(&visited[0][0], &visited[0][0] + 17 * 17, 0);
-    fill(&pre[0][0][0], &pre[0][0][0] + 17 * 17 * 2, 0);
 
     queue<pair<int,int>> q;
     q.push({cy, cx});
@@ -93,10 +75,10 @@ void nextStep(int idx){
 }
 
 void movePlayer(int t){
-
     for(int i = 1; i < t; ++i){
         if(P[i].died == 1) continue;
-
+        
+        fill(&pre[0][0][0], &pre[0][0][0] + 17 * 17 * 2, 0);
         bfs(P[i].cy, P[i].cx, P[i].ey, P[i].ex);
 
         nextStep(i);
@@ -138,7 +120,6 @@ void entering(int idx){
 
 int main() {
     // Please write your code here.
-    
     //global_init()
     cin >> n >> m;
     for(int i = 1; i <= n; ++i)
@@ -151,30 +132,20 @@ int main() {
     }
 
     int t = 1;
-
     while(true){          // 수정
-        // 종료 조건.
-
-        movePlayer(min(t, m + 1));
-        //cout << "움직인 후\n";
-        //showPlayer();
+         movePlayer(min(t, m + 1));
 
         makeBlind();
 
         if(t < m + 1)
             entering(t);
-        //cout << "들어온 후\n";
-        //showPlayer();
 
         if(canBreak())
             break;
 
-        //showArr();
-
-        //cout << "\n";
-
         t++;
     }
+
     cout << t << '\n';
     return 0;
 }
