@@ -3,149 +3,181 @@
 #include <algorithm>
 using namespace std;
 
-int n, m, h, k; // 격자크기, 도망자 수, 나무 수, 턴
 
-struct player{
-    int x, y, dir, died;
-};
-player P[10000];
-
-int tree[101][101]; // 1-indexed
-int visited[101][101];
-int attackerX, attackerY, attackerDir;
-int point = 0;
-
+int n, m, h, k; // 격자, 도망자 수, 나무 수, k 턴
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
 
-int len = 1, cur = 0, s = 0, flag = 0;
+struct runner{
+    int x, y, dir, died;
+};
+runner R[10001];
 
-void playerMove(){
-    for(register int idx = 1; idx <= m; ++idx){
-        if(P[idx].died == 1) continue;
+int arr[101][101];
+int tree[101][101];
+int visited[101][101];
 
-        int distance = abs(attackerX - P[idx].x) + abs(attackerY - P[idx].y);
-        if(distance > 3) continue;
+int sx = 0, sy = 0, sdir = 0;
+int cur = 0, len = 1, change = 0;
+int flag = 0;
 
-        int nx = P[idx].x + dx[P[idx].dir];
-        int ny = P[idx].y + dy[P[idx].dir];
+int point = 0; // output
 
-        if(nx < 1 || nx > n || ny < 1 || ny > n){
-            P[idx].dir = (P[idx].dir + 2) % 4;      ////
-            nx = P[idx].x + dx[P[idx].dir];
-            ny = P[idx].y + dy[P[idx].dir];
+void showTree(){
+    for(int i = 1; i <= n; ++i){
+        for(int j = 1; j <= n; ++j){
+            cout << tree[i][j] << '\t';
         }
-
-        ////////////////////////
-        if(nx == attackerX && ny == attackerY)  continue;
-        
-        P[idx].x = nx;
-        P[idx].y = ny;
+        cout << '\n';
     }
 }
 
+void showRunner(){
+    for(int idx = 1; idx <= m; ++idx){
+        if(R[idx].died == 1)
+            cout << idx << " DIED\n";
+        else cout << idx << ": " << R[idx].x << " " << R[idx].y << " DIR:" << R[idx].dir << '\n';
+    }
+}
+
+void showS(){
+    cout << sx << "," << sy << " DIR:" << sdir << "\n";
+}
+
+void moveR(){
+    for(int idx = 1; idx <= m; ++idx){
+        if(R[idx].died == 1) continue;
+
+        int dist = abs(R[idx].x - sx) + abs(R[idx].y - sy);
+        if(dist > 3) continue;
+
+        int nx = R[idx].x + dx[R[idx].dir];
+        int ny = R[idx].y + dy[R[idx].dir];
+
+        if(nx < 1 || nx > n || ny < 1 || ny > n){
+            R[idx].dir = (R[idx].dir + 2) % 4;
+            nx = R[idx].x + dx[R[idx].dir];
+            ny = R[idx].y + dy[R[idx].dir];
+        }
+        
+        if(nx == sx && ny == sy) continue;
+
+        R[idx].x = nx;
+        R[idx].y = ny;
+    }
+}
+
+// cur len, change
 void move1(){
-    attackerX += dx[attackerDir];
-    attackerY += dy[attackerDir];
+    sx = sx + dx[sdir];
+    sy = sy + dy[sdir];
 
     cur++;
-    if(len == cur){
-        s++;
-        attackerDir = (attackerDir + 1) % 4;
+
+    if(cur == len){
         cur = 0;
+        sdir = (sdir + 1) % 4;
+        change++;
     }
-    if(s == 2){
+    if(change == 2){
         len++;
-        s = 0;
+        change = 0;
     }
 
-    if(attackerX == 1 && attackerY == 1){
-        attackerDir = 2;
+    if(sx == 1 && sy == 1){
         fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
+        sdir = 2;
         flag = 1;
     }
 }
 
 void move2(){
-    visited[attackerX][attackerY] = 1;
+    visited[sx][sy] = 1;
 
-    attackerX += dx[attackerDir];
-    attackerY += dy[attackerDir];
+    int nx = sx + dx[sdir];
+    int ny = sy + dy[sdir];
 
-    int nx = attackerX + dx[attackerDir];
-    int ny = attackerY + dy[attackerDir];
+    sx = nx;
+    sy = nx;
 
-    if(nx < 1|| nx > n || ny < 1 || ny > n || visited[nx][ny] == 1){
-        attackerDir = (attackerDir + 3) % 4;
+    nx = sx + dx[sdir];
+    ny = sy + dy[sdir];
+
+    if(nx < 1 || nx > n || ny < 1 || ny > n){
+        sdir = (sdir + 3) % 4;
+    }
+    else if(visited[nx][ny]){
+        sdir = (sdir + 3) % 4;
     }
 
-    if(attackerX == (n / 2) + 1 && attackerY == (n / 2) + 1){
-        attackerDir = 0;
-        len = 1, cur = 0, s = 0, flag = 0;
+    if(sx == (n / 2) + 1 && sy == (n / 2) + 1){
+        flag = 0;
+        sdir = 0;
+        len = 1;
+        cur = 0;
+        change = 0;
     }
 }
 
-void attackerMove(){
-    if(flag == 0){
+void moveS(){
+    if(flag == 0)
         move1();
-    }
-    else move2();
+    else
+        move2();
 }
 
-void getPoint(int t){
-    int cnt = 0;
+void attack(int t){
+    int cnt = 0; 
 
-    for(register int len = 0; len < 3; ++len){
-        int xx = attackerX + len * dx[attackerDir];
-        int yy = attackerY + len * dy[attackerDir];
-
+    for(int len = 0; len < 3; ++len){
+        int xx = sx + len * dx[sdir];
+        int yy = sy + len * dy[sdir];
         if(xx < 1 || xx > n || yy < 1 || yy > n) continue;
-        if(tree[xx][yy] == 1) continue;
+        if(tree[xx][yy] > 0) continue;
 
-        for(register int idx = 1; idx <= m; ++idx){
-            if(P[idx].died == 1) continue;
-            if(xx == P[idx].x && yy == P[idx].y){
-                P[idx].died = 1;
+        for(int idx = 1; idx <= m; ++idx){
+            if(R[idx].died == 1) continue;
+            
+            if(xx == R[idx].x && yy == R[idx].y){
+                R[idx].died = 1;
                 cnt++;
             }
         }
     }
-    point += (t * cnt);
+
+    point += t * cnt;
 }
 
+// 1-indexed
 int main() {
-    ios_base::sync_with_stdio(false);
-    cout.tie(nullptr);  cin.tie(nullptr);
-
+    // Please write your code here.
     int T = 1;
-    for(register int tc = 1; tc <= T; ++tc){
-        // init(); 테케마다 초기화할 것들 ex: tree, visited, attacker, died, point
+    for(int test_case = 1; test_case <= T; ++test_case){
+        // global_init();
 
         cin >> n >> m >> h >> k;
-
-        attackerY = attackerX = (n / 2) + 1;
-        attackerDir = 0;
-
-        for(register int idx = 1; idx <= m; ++idx){
-            cin >> P[idx].x >> P[idx].y >> P[idx].dir;
-            P[idx].died = 0;
+        for(int i = 1; i <= m; ++i){
+            cin >> R[i].x >> R[i].y >> R[i].dir;
         }
-        for(register int i = 1; i <= h; ++i){
+        for(int i = 1; i <= h; ++i){
             int x, y;
             cin >> x >> y;
             tree[x][y] = 1;
         }
 
-        for(register int run = 1; run <= k; ++run){
-            playerMove();
+        sx = sy = (n / 2) + 1; sdir = 0;
 
-            attackerMove();
 
-            getPoint(run);
+        for(int run = 1; run <= k; ++run){
+            moveR();
+
+            moveS();
+
+            attack(run);
+
         }
 
         cout << point << '\n';
     }
-
     return 0;
 }
