@@ -5,7 +5,7 @@ using namespace std;
 int n;
 
 int arr[31][31];
-int visited[931][931];
+int visited[31][31];
 int group_val[931];
 int group_cnt[931];
 int nearby[931][931];
