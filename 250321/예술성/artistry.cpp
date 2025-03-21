@@ -1,140 +1,154 @@
 #include <iostream>
-#include <queue>
 #include <algorithm>
+#include <queue>
 using namespace std;
-
 int n;
-int arr[31][31], visited[31][31]; // bfs니 바로.
-int point = 0;
+
+int arr[31][31];
+int visited[31][31];
+int group_val[31];
+int group_cnt[31];
+int nearby[31][31];
+int idx = 1;
+
 int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
-int idx[901], idx_cnt[900];
-int idx_near[901][901];
 
-void init(){
-    fill(&idx[0], &idx[0] + 901, 0);
-    fill(&idx_cnt[0], &idx_cnt[0] + 901, 0);
-    fill(&visited[0][0], &visited[0][0] + 31 * 31, 0);
-    fill(&idx_near[0][0], &idx_near[0][0] + 901 * 901, 0);
-}
+int point = 0;
 
-void bfs(int i, int j, int val){
+// FloodFill용 BFS암
+// 전형적인 bfs(i, j) 큐가 빌 때까지 4방향 탐색 후 (OOB, 이미 방문, 같은 그룹 아니면 Pass)
+// 큐에 넣고 방문처리하기.          -> 여기까지가 전형적인 FloodFill BFS이다.
+// 특수 조건이 있다. 각 그룹 번호에 대한 실제 value 값, 각 그룹에 대한 원소 개수를 구해야하므로 
+// 전형 BFS 조건 밑에 코드를 삽입하여 원하는 조건을 처리해야한다. vistied[][] <-> arr[][]
+// expolre()은 BFS에서 할 수 가 없다. 아직 FloodFill 완전히 안 끝나서 visited[][]가 완성이 안됐으므로.
+void bfs(int i, int j){
     queue<pair<int,int>> q;
     q.push({i, j});
-    visited[i][j] = val;
-    idx[val] = arr[i][j];               // KICK
-    idx_cnt[val]++;                     // KICK
+    visited[i][j] = idx;
+
+    group_val[idx] = arr[i][j];
+    group_cnt[idx]++;
 
     while(!q.empty()){
-        int y = q.front().first, x = q.front().second;
+        int y = q.front().first;
+        int x=  q.front().second;
         q.pop();
 
-        for(register int dir = 0; dir < 4; ++dir){
+        for(int dir = 0; dir < 4; ++dir){
             int yy = y + dy[dir];
             int xx = x + dx[dir];
+
             if(yy < 0 || yy >= n || xx < 0 || xx >= n) continue;
             if(visited[yy][xx]) continue;
+            if(arr[yy][xx] != arr[y][x]) continue;
 
-            if(arr[yy][xx] == arr[i][j]){
-                q.push({yy, xx});
-                visited[yy][xx] = val;
-                idx_cnt[val]++;         // KICK
-            }
+            q.push({yy, xx});
+            visited[yy][xx] = idx;
+
+            group_cnt[idx]++;
         }
     }
 }
 
-int floodfill(){
-    int cnt = 1;
-    for(register int i = 0; i < n; ++i){
-        for(register int j = 0; j < n; ++j){
-            if(visited[i][j]) continue;
-            else{
-                bfs(i, j, cnt);     // cnt 추가해야하는 이유.
-                cnt++;
-            }
+void floodFill(){
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            if(visited[i][j] != 0) continue;
+            bfs(i, j);
+            idx++;
         }
     }
-    return cnt;
 }
 
-void find_idx_near(){       // 변수의 의미에 대해서 visited[][], arr[][];
-    for(register int i = 0; i < n; ++i){
-        for(register int j = 0; j < n; ++j){
-            for(register int dir = 0; dir < 4; ++dir){
+// 각 2차원 visisted[i][j], 4방향 탐색하여, 자기 그룹이 아닌 것을 찾아야한다.
+// 타당성을 생각해보자
+void explore(){
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            for(int dir = 0; dir < 4; ++dir){
                 int yy = i + dy[dir];
                 int xx = j + dx[dir];
                 if(yy < 0 || yy >= n || xx < 0 || xx >= n) continue;
                 if(visited[yy][xx] != visited[i][j]){
-                    idx_near[visited[i][j]][visited[yy][xx]]++;
+                    nearby[visited[i][j]][visited[yy][xx]]++;
                 }
             }
-        }
-    } // 여기서는 arr이 아닌 visited[][]를 봐야하는 이유를 바로 생각. 다른 변수로 놀 수 있음.
-}
-
-void getPoint(int cnt){
-    for(register int i = 1; i < cnt; ++i){
-        for(register int j = i + 1; j < cnt; ++j){
-            point += (idx_cnt[i] + idx_cnt[j]) * idx[i] * idx[j] * idx_near[i][j];
         }
     }
 }
 
 void rotateCross(){
     int tmp[31][31];
-    for(register int i = 0; i < n; ++i)
-        for(register int j = 0; j < n; ++j)
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             tmp[i][j] = arr[i][j];
 
-    for(register int i = 0; i < n / 2; ++i){
+    // 십자가 회전 == 중점 기준 절반 회전시키기 (신발 끈).       i,          n/2,        n-1-i
+    for(int i = 0; i < n / 2; ++i){
         arr[i][n / 2] = tmp[n / 2][n - 1 - i];
-        arr[n / 2][i] = tmp[i][n / 2];
-        arr[n - i - 1][n / 2] = tmp[n / 2][i];
         arr[n / 2][n - 1 - i] = tmp[n - 1 - i][n / 2];
+        arr[n - 1 - i][n / 2] = tmp[n / 2][i];
+        arr[n / 2][i] = tmp[i][n / 2];
     }
 }
 
 void rotateRight(){
     int tmp[31][31];
-    for(register int i = 0; i < n; ++i)
-        for(register int j = 0; j < n; ++j)
-            tmp[i][j] = arr[i][j];
-    
-    for(register int i = 0; i < n / 2; ++i){
-        for(register int j = 0; j < n / 2; ++j){
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
+            tmp[i][j] = arr[i][j];    
+
+    // 배열회전(시계방향) 절반만 회전. 4개의 절반을 회전 시키고 평행이동 시켜야함.
+    for(int i = 0; i < n / 2; ++i){
+        for(int j = 0; j < n / 2; ++j){
             arr[i][j] = tmp[n / 2 - j - 1][i];
             arr[n / 2 + 1 + i][j] = tmp[n / 2 + 1 + n / 2 - j - 1][i];
-            arr[i][j + n / 2 + 1] = tmp[n / 2 - j - 1][i + n / 2 + 1];
-            arr[n / 2 + 1 + i][j + n / 2 + 1] = tmp[n / 2 + 1 + + n / 2 - j - 1][n / 2 + 1 + i];
+            arr[i][n / 2 + 1 + j] = tmp[n / 2 - j - 1][n / 2 + 1 + i];
+            arr[n / 2 + 1 + i][n / 2 + 1 + j] = tmp[n / 2 + 1 + n / 2 - j - 1][n / 2 + 1 + i];
+        }
+    }
+}
+
+// 수식은 질문에 있고, 질문에 맞게 수식화. 그리고 수식화 필요한 것들은 곧 변수가 됨.
+void getPoint(){
+    for(int i = 1; i < idx; ++i){
+        for(int j = i + 1; j < idx; ++j){
+            point += (group_cnt[i] + group_cnt[j]) * group_val[i] * group_val[j] * nearby[i][j];
         }
     }
 }
 
 int main() {
-    cin >> n;
-    for(register int i = 0; i < n; ++i)
-        for(register int j = 0; j < n; ++j)
-            cin >> arr[i][j];
-    
+    // Please write your code here.
     int T = 1;
+    
+    for(int test_case = 1; test_case <= T; ++test_case){
+        cin >> n;
+        for(int i = 0; i < n; ++i)
+            for(int j = 0; j < n; ++j)
+                cin >> arr[i][j];
 
-    for(register int tc = 0; tc < T; ++tc){
-        for(register int r = 0; r < 4; ++r){
-            init();
 
-            int cnt = floodfill();
+        for(int run = 0; run < 4; ++run){
+            fill(&visited[0][0], &visited[0][0] + 31 * 31, 0);
+            fill(&group_val[0], &group_val[0] + 931, 0);
+            fill(&group_cnt[0], &group_cnt[0] + 931, 0);
+            fill(&nearby[0][0], &nearby[0][0] + 931 * 931, 0);
+            idx = 1;
 
-            find_idx_near();
+            floodFill();
 
-            getPoint(cnt);
+            explore();
+
+            getPoint();
 
             rotateCross();
 
             rotateRight();
         }
-    }
 
-    cout << point << '\n';
+        cout << point << '\n';
+    }
     return 0;
 }
