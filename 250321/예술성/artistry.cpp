@@ -5,10 +5,10 @@ using namespace std;
 int n;
 
 int arr[31][31];
-int visited[31][31];
-int group_val[31];
-int group_cnt[31];
-int nearby[31][31];
+int visited[931][931];
+int group_val[931];
+int group_cnt[931];
+int nearby[931][931];
 int idx = 1;
 
 int dy[4] = {-1, 0, 1, 0};
