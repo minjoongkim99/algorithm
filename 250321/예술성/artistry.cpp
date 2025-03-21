@@ -1,7 +1,6 @@
 #include <iostream>
 #include <algorithm>
 #include <queue>
-#include <vector>
 using namespace std;
 int n;
 
@@ -16,38 +15,6 @@ int dy[4] = {-1, 0, 1, 0};
 int dx[4] = {0, 1, 0, -1};
 
 int point = 0;
-
-void showArr(){
-    for(int i = 0; i < n; ++i){
-        for(int j = 0; j < n; ++j){
-            cout << arr[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
-void showVisited(){
-    for(int i = 0; i < n; ++i){
-        for(int j = 0; j < n; ++j){
-            cout << visited[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
-void showCount(){
-    cout << "CNT\n";
-    for(int i = 1; i < idx; ++i){
-        cout << i << ":" << group_cnt[i] << '\n';
-    }
-}
-
-void showVal(){
-    cout << "VAL\n";
-    for(int i = 1; i < idx; ++i){
-        cout << i << ":" << group_val[i] << '\n';
-    }
-}
 
 void bfs(int i, int j){
     queue<pair<int,int>> q;
@@ -87,12 +54,27 @@ void floodFill(){
     }
 }
 
+void explore(){
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            
+            for(int dir = 0; dir < 4; ++dir){
+                int yy = i + dy[dir];
+                int xx = j + dx[dir];
+                if(yy < 0 || yy >= n || xx < 0 || xx >= n) continue;
+                if(visited[yy][xx] != visited[i][j]){
+                    nearby[visited[i][j]][visited[yy][xx]]++;
+                }
+            }
+        }
+    }
+}
+
 void rotateCross(){
     int tmp[31][31];
     for(int i = 0; i < n; ++i)
         for(int j = 0; j < n; ++j)
             tmp[i][j] = arr[i][j];
-
 
     for(int i = 0; i < n / 2; ++i){
         arr[i][n / 2] = tmp[n / 2][n - 1 - i];
@@ -111,8 +93,9 @@ void rotateRight(){
     for(int i = 0; i < n / 2; ++i){
         for(int j = 0; j < n / 2; ++j){
             arr[i][j] = tmp[n / 2 - j - 1][i];
-            arr[i][j] = tmp[n / 2 - j - 1][i];
-            arr[i][j] = tmp[n / 2 - j - 1][i];
+            arr[n / 2 + 1 + i][j] = tmp[n / 2 + 1 + n / 2 - j - 1][i];
+            arr[i][n / 2 + 1 + j] = tmp[n / 2 - j - 1][n / 2 + 1 + i];
+            arr[n / 2 + 1 + i][n / 2 + 1 + j] = tmp[n / 2 + 1 + n / 2 - j - 1][n / 2 + 1 + i];
         }
     }
 }
@@ -135,9 +118,6 @@ int main() {
             for(int j = 0; j < n; ++j)
                 cin >> arr[i][j];
 
-        //rotateCross();
-        //showArr();
-        //cout << "!!!!\n";
 
         for(int run = 0; run < 4; ++run){
             fill(&visited[0][0], &visited[0][0] + 31 * 31, 0);
@@ -148,18 +128,16 @@ int main() {
 
             floodFill();
 
-            //showVisited();
-            //showCount();
-            //showVal();
+            explore();
 
             getPoint();
 
             rotateCross();
 
             rotateRight();
-
-            cout << "----\n";
         }
+
+        cout << point << '\n';
     }
     return 0;
 }
