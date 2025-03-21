@@ -3,7 +3,6 @@
 using namespace std;
 int n, m, k;
 
-//int arr[21][21];
 priority_queue<int> pq[21][21];
 struct player{
     int x, y, d, s, gun;
@@ -15,19 +14,13 @@ int point[32];
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
 
-void showPlayer(){
-    for(int i = 1; i <= m; ++i){
-        cout << P[i].x << "," << P[i].y << " DIR:" << P[i].d << " GUN:" << P[i].gun << "\n";  
-    }
-}
-
 void movePlayer(int idx){
     int nx = P[idx].x + dx[P[idx].d];
     int ny = P[idx].y + dy[P[idx].d];
 
-    if(nx < 1 || nx > n || ny < 1 || ny > n){
+    if(nx < 1 || nx > n || ny < 1 || ny > n)
         P[idx].d = (P[idx].d + 2) % 4;
-    }
+    
     P[idx].x = P[idx].x + dx[P[idx].d];
     P[idx].y = P[idx].y + dy[P[idx].d];
 }
@@ -76,7 +69,6 @@ pair<int,int> fight(int a, int b){
     }
 
     point[winner] += (P[winner].s + P[winner].gun) - (P[loser].s + P[loser].gun); 
-
     return {winner, loser};
 }
 
@@ -102,7 +94,7 @@ void moveLoser(int idx){
         if(isThere(nx, ny, idx)) continue;
 
         P[idx].x = nx;
-        P[idx].y = ny;
+        P[idx].y = ny;              ////////////////////////
         P[idx].d = d;               ////////////////////////
                                     ////////////////////////
         break;
@@ -116,7 +108,6 @@ void moveWinner(int idx){
 }
 
 int main() {
-    // Please write your code here.
 
     int T = 1;
 
@@ -138,15 +129,14 @@ int main() {
         }
 
         for(int run = 1; run <=k; ++run){
-
+            // local_init();
+            
             for(int idx = 1; idx <= m; ++idx){
                 movePlayer(idx);
 
                 int val = checkFight(idx);
                 if(val > 0){
-                    //cout << idx << " " << val << " FIGHT\n";
                     pair<int,int> ret = fight(idx, val);
-                    //cout << "WINNER:" << ret.first << " LOSER:" << ret.second << "\n";
 
                     moveLoser(ret.second);
                     
@@ -154,11 +144,6 @@ int main() {
                 }
                 else getGun(idx);
             }
-
-            //showPlayer();
-
-            //cout << "====\n";
-
         }
 
         for(int i = 1; i <= m; ++i){
