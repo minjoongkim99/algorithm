@@ -23,31 +23,6 @@ knight K[305];
 
 int distSum, stoneCnt, attackCnt;
 
-void showKnight(){
-    for(int idx = 1; idx <= M; ++idx){
-        if(K[idx].died == 1) cout << idx << ": DIED" << " DIST: " << K[idx].dist << " STOP:" << K[idx].stop <<  "\n";
-        else cout << idx << ": " << K[idx].y << "," << K[idx].x << " DIST: " << K[idx].dist << " STOP:" << K[idx].stop << "\n";
-    }
-}
-
-void showArr(){
-    for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
-            cout << arr[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
-void showStone(){
-    for(int i = 0; i < N; ++i){
-        for(int j = 0; j < N; ++j){
-            cout << stone[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-}
-
 void local_init(){
     distSum = stoneCnt = attackCnt = 0;
     fill(&stone[0][0], &stone[0][0] + 51 * 51, 0);
@@ -225,9 +200,7 @@ void left_stone(int dir, int left, int val, int idx){
             int yyy = yy + j * dy[left];
             int xxx = xx + j * dx[left];
             if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) continue;
-            if(idx > 0){
-                //cout << idx << ":" << yyy << ".." << xxx << "\n";
-            }
+
             stone[yyy][xxx] = val;
         }
     }
@@ -252,9 +225,7 @@ void right_stone(int dir, int right, int val, int idx){
             int yyy = yy + j * dy[right];
             int xxx = xx + j * dx[right];
             if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) continue;
-            if(idx > 0){
-                //cout << idx << ":" << yyy << ".." << xxx << "\n";
-            }
+
             stone[yyy][xxx] = val;
         }
     }
@@ -290,16 +261,13 @@ int makeStone(int dir){
         if(K[idx].died == 1) continue;
 
         if(stone[K[idx].y][K[idx].x] == 1){
-            //cout << idx << "STRAIGHT\n";
             straight_stone(dir, 0, idx);
         }
         else if(stone[K[idx].y][K[idx].x] == 2){
-            //cout << idx << "LEFT\n";
             straight_stone(dir, 0, idx);
             left_stone(dir, left, 0, idx);
         }
         else if(stone[K[idx].y][K[idx].x] == 3){
-            //cout << idx << "RIGHT\n";
             straight_stone(dir, 0, idx);
             right_stone(dir, right, 0, idx);
         }
@@ -331,16 +299,10 @@ void medusaSight(){
             stoneKnight = stone;
             attackDir = dir;
         }
-
-        //cout << dir << "DIR \n";
-        //showStone();
-        //cout << "\n";
     }
 
     fill(&stone[0][0], &stone[0][0] + 51 * 51, 0);
     makeStone(attackDir);
-    //showStone();
-    //cout << "\n";
 
     for(int i = 0; i < N; ++i){
         for(int j = 0; j < N; ++j){
@@ -396,25 +358,15 @@ int main() {
                 moveM();
                 killKnight();
 
-                //cout << "MEDUSA: " << sy << " and " << sx << "!\n";
-
                 if(sy == ey && sx == ex){
                     cout << 0 << '\n';
                     break;
                 }
 
                 medusaSight();
-                //showKnight();
-
+                
                 moveK();
-                //showKnight();
-            
-                //cout << distSum << ' ' << stoneCnt << ' ' << attackCnt << '\n';
-                /*
-                for(int idx = 1; idx <= M; idx++){
-                    if(K[idx].died == 1) continue;
-                    distSum += K[idx].dist;
-                }*/
+ 
                 cout << distSum << ' ' << stoneCnt << ' ' << attackCnt << '\n';
 
 
