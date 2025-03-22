@@ -176,7 +176,7 @@ void straight_stone(int dir, int val, int idx){
     for(int i = 1; i <= N; ++i){
         int yy = posY + i * dy[dir];
         int xx = posX + i * dx[dir];
-        if(yy < 0 || yy >= N || xx < 0 || xx >= N) continue;
+        if(yy < 0 || yy >= N || xx < 0 || xx >= N) break;
         stone[yy][xx] = val; 
     }
 }
@@ -199,7 +199,7 @@ void left_stone(int dir, int left, int val, int idx){
         for(int j = 1; j <= i; ++j){
             int yyy = yy + j * dy[left];
             int xxx = xx + j * dx[left];
-            if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) continue;
+            if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) break;
 
             stone[yyy][xxx] = val;
         }
@@ -224,7 +224,7 @@ void right_stone(int dir, int right, int val, int idx){
         for(int j = 1; j <= i; ++j){
             int yyy = yy + j * dy[right];
             int xxx = xx + j * dx[right];
-            if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) continue;
+            if(yyy < 0 || yyy >= N || xxx < 0 || xxx >= N) break;
 
             stone[yyy][xxx] = val;
         }
