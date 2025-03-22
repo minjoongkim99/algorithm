@@ -336,6 +336,9 @@ void input(){
 
 int main() {
     // Please write your code here.
+    ios_base::sync_with_stdio(false);
+    cout.tie(nullptr);
+    cin.tie(nullptr);
 
     int T = 1;
     for(int test_case = 1; test_case <= T; ++test_case){
@@ -368,7 +371,6 @@ int main() {
                 moveK();
  
                 cout << distSum << ' ' << stoneCnt << ' ' << attackCnt << '\n';
-
 
                 t++;
             }
