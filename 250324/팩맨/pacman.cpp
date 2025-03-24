@@ -55,11 +55,6 @@ void makeEgg(){
     }
 }
 
-/*
-    2.몬스터 이동
-    몬스터는 자기가 가진 방향대로 움직임.
-    시체가 있거나 팩맨이 있거나, OOB이면 반 시계방향 45도 회전 계속 판단. 8방향 다 못간다면 현재 위치 고정
-*/
 void moveMonster(){
     for(int i = 0; i < mon.size(); ++i){
         if(mon[i].died == 1) continue;
@@ -139,7 +134,7 @@ void attack(int y1, int x1, int y2, int x2, int y3, int x3){
 */
 void movePacman(){
     int ny1 = 0, nx1 = 0, ny2 = 0, nx2 = 0, ny3 = 0, nx3 = 0;
-    int cnt = 0;
+    int cnt = -1;
 
     for(int i = 0; i < 8; i = i + 2){
         int y1 = py + ddy[i];
@@ -169,7 +164,6 @@ void movePacman(){
         }
     }
 
-    //cout << cnt << "->" << ny1 << "," << nx1 << " " << ny2 << "," << nx2 << " " << ny3 << "," << nx3 << "\n"; 
     attack(ny1, nx1, ny2, nx2, ny3, nx3);
     py = ny3;
     px = nx3;
@@ -197,43 +191,25 @@ int main() {
             mon.push_back({y, x, dir - 1, 0});
         }
 
-        //printMon();
         for(int run = 1; run <= t; ++run){
-            /*
-            1.몬스터 복제 시도
-            현재위치에서 몬스터가 자신과 같은 방향 가진 몬스터 부화.
-            알은 못 움직임*/
+            //local_init();
         
             makeEgg();
-            //cout << "EGG SIZE:" << egg.size() << '\n';
-            //printEgg();
-
+            //printMon();
 
             moveMonster();
             //printMon();
 
-
             decrease();
 
             movePacman();
-            //cout << "PACMAN: " << py << "," << px << "\n";
             //printMon();
 
-            /*
-            4.몬스터 시체 소멸
-            몬스터 시체 소멸 총 2턴동안 유지
-            */
-        
-
-            /*
-            5.몬스터 복제 완성
-            부화성공.*/
             eggToMon();
 
-            /*
-            t턴 지난 후 살아남은 몬스터 출력.
-            */
+            //cout << "[------]\n";
         }
+
         for(int i = 0; i < mon.size(); ++i){
             if(mon[i].died == 0)
                 ans++;
