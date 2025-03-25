@@ -259,7 +259,8 @@ int main() {
 
             repair();
         }
-
+        
+        getAnswer();
         cout << ans <<'\n';
     }
 
