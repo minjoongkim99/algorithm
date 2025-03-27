@@ -18,24 +18,6 @@ int len, ry, rx;
 int ey, ex;
 
 int point = 0;
-void showArr(){
-    cout << "ARR\n";
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            cout << arr[i][j] << ' ';
-        }
-        cout << "\n";
-    }
-}
-
-void showPlayer(){
-    for(int idx = 1; idx <= m; ++idx){
-        if(P[idx].died == 1){
-            cout << "IDX" << idx << " IS DIED\n";
-        }
-        else cout << "IDX" << idx << " " << P[idx].y << "," << P[idx].x << '\n';
-    }
-}
 
 bool canBreak(){
     for(int idx = 1; idx <= m; ++idx)
@@ -82,14 +64,15 @@ void moveRunner(){
 
 bool isIn(int y1, int x1, int y2, int x2){
     int flag1 = 0, flag2 = 0;
+    if(y1 > n || x1 > n || y2 > n || x2 > n) return false;
 
-    for(int i = y1; i < y2; ++i){
-        for(int j = x1; j < x2; ++j){
+    for(int i = y1; i <= y2; ++i){
+        for(int j = x1; j <= x2; ++j){
             if(arr[i][j] == -1)
                 flag1 = 1;
             for(int idx = 1; idx <= m; ++idx){
                 if(P[idx].died == 1) continue;
-                if(P[idx].y == i && P[idx].x == j){
+                else if(P[idx].y == i && P[idx].x == j){
                     flag2 = 1;
                 }
             }
@@ -101,11 +84,11 @@ bool isIn(int y1, int x1, int y2, int x2){
 }
 
 void findPos(){
-    for(int l = 1; l <= n; ++l){
+    for(int l = 1; l <= n + 1; ++l){
         for(int i = 1; i <= n; ++i){
             for(int j = 1; j <= n; ++j){
                 if(isIn(i, j, i + l, j + l)){
-                    len = l;
+                    len = l + 1;
                     ry = i;
                     rx = j;
                     return;
@@ -154,11 +137,10 @@ void rotatePerson(int idx){
 
 void rotatePeople(){
     for(int idx = 1; idx <= m; ++idx){
-        if(P[idx].died ) continue;
+        if(P[idx].died == 1) continue;
         rotatePerson(idx);
     }
 }
-
 
 int main() {
     // Please write your code here.
@@ -181,7 +163,6 @@ int main() {
 
         for(int run = 1; run <= k; ++run){
             //local_init();
-            //cout << "SIMU" << run << '\n';
 
             moveRunner();
 
@@ -189,27 +170,16 @@ int main() {
                 break;
             }
 
-            //cout << "AFTER RUNNER MOVE\n";
-            //showArr();
-            //showPlayer();
-
             len = 0, ry = 0, rx = 0;
             findPos();
-            //cout << "LEN:" << len << " RY:" << ry << " RX:" << rx << "\n"; 
 
             rotateArr();
-            //cout << "AFTER ROTATE\n";
-            //showArr();
 
             rotatePeople();
-
-            //showPlayer();
-
-            //cout << "================\n";
         }
-        for(int idx = 1; idx <= m; ++idx){
+        
+        for(int idx = 1; idx <= m; ++idx)
             point += P[idx].dist;
-        }
         cout << point << '\n' << ey << ' ' << ex << '\n';
     }
     return 0;
