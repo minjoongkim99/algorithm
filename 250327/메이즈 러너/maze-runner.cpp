@@ -205,7 +205,7 @@ int main() {
 
             //showPlayer();
 
-            cout << "================\n";
+            //cout << "================\n";
         }
         for(int idx = 1; idx <= m; ++idx){
             point += P[idx].dist;
