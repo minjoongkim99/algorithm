@@ -64,10 +64,10 @@ void moveRunner(){
 
 bool isIn(int y1, int x1, int y2, int x2){
     int flag1 = 0, flag2 = 0;
-    if(y1 > n || x1 > n || y2 > n || x2 > n) return false;
+    if(y1 > n || x1 > n || y2 - 1 > n || x2 - 1 > n) return false;
 
-    for(int i = y1; i <= y2; ++i){
-        for(int j = x1; j <= x2; ++j){
+    for(int i = y1; i < y2; ++i){
+        for(int j = x1; j < x2; ++j){
             if(arr[i][j] == -1)
                 flag1 = 1;
             for(int idx = 1; idx <= m; ++idx){
@@ -88,7 +88,7 @@ void findPos(){
         for(int i = 1; i <= n; ++i){
             for(int j = 1; j <= n; ++j){
                 if(isIn(i, j, i + l, j + l)){
-                    len = l + 1;
+                    len = l;
                     ry = i;
                     rx = j;
                     return;
