@@ -8,7 +8,6 @@ int dy[4] = {-1, 1, 0, 0};
 int dx[4] = {0, 0, -1, 1};
 
 int arr[12][12]; // WALL, EXIT, EMPTY
-int player_map[12][12];
 
 struct player{
     int y, x, dist, died;
@@ -30,12 +29,11 @@ void showArr(){
 }
 
 void showPlayer(){
-    cout << "PLAYER_MAP\n";
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            cout << player_map[i][j] << ' ';
+    for(int idx = 1; idx <= m; ++idx){
+        if(P[idx].died == 1){
+            cout << "IDX" << idx << " IS DIED\n";
         }
-        cout << "\n";
+        else cout << "IDX" << idx << " " << P[idx].y << "," << P[idx].x << '\n';
     }
 }
 
@@ -82,14 +80,6 @@ void moveRunner(){
     }
 }
 
-void playerToArr(){
-    fill(&player_map[0][0], &player_map[0][0] + 12 * 12, 0);
-    for(int idx = 1; idx <= m; ++idx){
-        if(P[idx].died == 1) continue;
-        player_map[P[idx].y][P[idx].x] = idx;
-    }
-}
-
 bool isIn(int y1, int x1, int y2, int x2){
     int flag1 = 0, flag2 = 0;
 
@@ -97,8 +87,12 @@ bool isIn(int y1, int x1, int y2, int x2){
         for(int j = x1; j < x2; ++j){
             if(arr[i][j] == -1)
                 flag1 = 1;
-            if(player_map[i][j] > 0)
-                flag2 = 1;
+            for(int idx = 1; idx <= m; ++idx){
+                if(P[idx].died == 1) continue;
+                if(P[idx].y == i && P[idx].x == j){
+                    flag2 = 1;
+                }
+            }
         }
     }
     
@@ -146,27 +140,25 @@ void rotateArr(){
     }
 }
 
-void rotatePlayerMap(){
-    int tmp[12][12];
-    for(int i = 1; i <= n; ++i)
-        for(int j = 1; j <= n; ++j)
-            tmp[i][j] = player_map[i][j];
-
+void rotatePerson(int idx){
     for(int i = 0; i < len; ++i){
         for(int j = 0; j < len; ++j){
-            player_map[ry + i][rx + j] = tmp[ry + len - j - 1][rx + i];
+            if(P[idx].y == ry + len - j - 1 && P[idx].x == rx + i){
+                P[idx].y = ry + i;
+                P[idx].x = rx + j;
+                return;
+            }
         }
     }
-
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            if(player_map[i][j] > 0)
-                P[player_map[i][j]].y = i;
-                P[player_map[i][j]].x = j;
-        }
-    }
-
 }
+
+void rotatePeople(){
+    for(int idx = 1; idx <= m; ++idx){
+        if(P[idx].died ) continue;
+        rotatePerson(idx);
+    }
+}
+
 
 int main() {
     // Please write your code here.
@@ -193,10 +185,9 @@ int main() {
 
             moveRunner();
 
-            playerToArr();
-
-            if(canBreak())
+            if(canBreak()){
                 break;
+            }
 
             //cout << "AFTER RUNNER MOVE\n";
             //showArr();
@@ -210,11 +201,11 @@ int main() {
             //cout << "AFTER ROTATE\n";
             //showArr();
 
+            rotatePeople();
 
-            rotatePlayerMap();
             //showPlayer();
 
-            //cout << "================\n";
+            cout << "================\n";
         }
         for(int idx = 1; idx <= m; ++idx){
             point += P[idx].dist;
