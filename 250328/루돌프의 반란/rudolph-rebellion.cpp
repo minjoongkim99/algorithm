@@ -1,291 +1,228 @@
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 
-int n, m, p, c, d;
+int n, m, p, c, d;      // 격자크기, 턴 수, 산타 수, 루돌프 힘, 산타 힘
 
-int ddy[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
-int ddx[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+pair<int,int> monster;
+int monsterDir = 0;
 
-int ry, rx, rdir;
 struct santa{
-    int y, x, dir, stop, died, point;
+    int y, x, dir, point, died, stun;
 };
 santa S[32];
 int arr[52][52];
 
-void showR(){
-    cout << ry << "and" << rx << " DIR:" << rdir << '\n';
-}
+int ddy[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+int ddx[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
-void showSanta(){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died == 1) 
-            cout << "IDX" << idx << " IS DIED\n";
-        else cout << "IDX" << idx << " " << S[idx].y << "," << S[idx].x << "\n";
-    }
-}
-
-void showArr(){
-    cout << "This is SANTA MAP\n";
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            cout << arr[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-    cout << '\n';
-}
-
-void santaToArr(){
-    fill(&arr[0][0], &arr[0][0] + 52 * 52, 0);
-    
-    for(int idx = 1; idx <= p; ++idx){
+void moveToArr(){
+    for(int idx = 1; idx <= p; idx++){
         if(S[idx].died == 1) continue;
         arr[S[idx].y][S[idx].x] = idx;
     }
 }
 
-void arrToSanta(){
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= n; ++j){
-            if(arr[i][j] > 0){
-                S[arr[i][j]].y = i;
-                S[arr[i][j]].x = j;
-            }
+void moveToVec(){
+    for(int i = 1; i <= n; i++){
+        for(int j = 1; j <= n; j++){
+            if(arr[i][j] == 0) continue;
+            S[arr[i][j]].y = i;
+            S[arr[i][j]].x = j;
         }
     }
+    fill(&arr[0][0], &arr[0][0] + 52 * 52, 0);
 }
 
-bool canBreak(){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died == 0) return false;
-    }
-    return true;
-}
-
-int checkConflict(){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died == 1) continue;
-        if(S[idx].y == ry && S[idx].x == rx)
-            return idx;
-    }
-
-    return 0;
-}
-
-void rMove(){
-    int ndir = rdir;
-    int ny = ry, nx = rx;
+void monsterMove(){
+    int distance = 1000000;
     int target = 0;
-
-    int cur_dist = 100000000;
-
-    for(int dir = 0; dir < 8; ++dir){
-        int yy = ry + ddy[dir];
-        int xx = rx + ddx[dir];
-
-        if(yy < 1 || yy > n || xx < 1 || xx > n) continue;
-
-        for(int idx = 1; idx <= p; ++idx){
-            if(S[idx].died == 1) continue;
-            int next_dist = (S[idx].y - yy) * (S[idx].y - yy) + (S[idx].x - xx) * (S[idx].x - xx);
-
-            if(cur_dist > next_dist){
-                cur_dist = next_dist;
-                ny = yy;
-                nx = xx;
-                ndir = dir;
-                target = idx;
+    for(int i = 1; i <= p; i++){
+        if(S[i].died == 1) continue;
+        int d = (monster.first - S[i].y) * (monster.first - S[i].y) + (monster.second - S[i].x) * (monster.second - S[i].x);
+        if(distance > d){
+            distance = d;
+            target = i;
+        }
+        else if(distance == d){
+            if(S[i].y > S[target].y){
+                target = i;
             }
-            else if(cur_dist == next_dist){
-                if(S[idx].y > S[target].y){
-                    ny = yy;
-                    nx = xx;
-                    ndir = dir;
-                    target = idx;
+            else if(S[i].y == S[target].y){
+                if(S[i].x > S[target].x){
+                    target = i;
                 }
-                else if(S[idx].y == S[target].y){
-                    if(S[idx].x > S[target].x){
-                        ny = yy;
-                        nx = xx;
-                        ndir = dir;
-                        target = idx;
-                    }
-                }
+
             }
         }
     }
-    ry = ny;
-    rx = nx;
-    rdir = ndir;
-}
 
-bool isThere(int target, int y, int x){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died == 1) continue;
-        if(idx == target) continue;
-        if(S[idx].y == y && S[idx].x == x)
-            return true;
-    }
-    return false;
-}
-
-void sMove(int idx){
-    int ny = S[idx].y;
-    int nx = S[idx].x;
-    int ndir = S[idx].dir;
-    int cur_dist = (ry - S[idx].y) * (ry - S[idx].y) + (rx - S[idx].x) * (rx - S[idx].x);
-    
-    for(int dir = 0; dir < 8; dir = dir + 2){
-        int yy = S[idx].y + ddy[dir];
-        int xx = S[idx].x + ddx[dir];
-
+    distance = 1000000;
+    int ny = 0, nx = 0, ndir = 0;
+    for(int dir = 0; dir < 8; dir++){
+        int yy = monster.first + ddy[dir];
+        int xx = monster.second + ddx[dir];
         if(yy < 1 || yy > n || xx < 1 || xx > n) continue;
-        if(isThere(idx, yy, xx)) continue;
 
-        int next_dist = (ry - yy) * (ry - yy) + (rx - xx) * (rx - xx);
-        if(cur_dist > next_dist){
-            cur_dist = next_dist;
+        int d = (yy - S[target].y) * (yy - S[target].y) + (xx - S[target].x) * (xx - S[target].x);
+        if(distance > d){
+            distance = d;
             ny = yy;
             nx = xx;
             ndir = dir;
         }
     }
-    S[idx].y = ny;
-    S[idx].x = nx;
-    S[idx].dir = ndir;
+    monster.first = ny;     monster.second = nx;    monsterDir = ndir;
+}
+
+bool checkIsIn(int idx, int y, int x){
+    for(int i = 1; i <= p; i++){
+        if(S[i].died == 1) continue;
+        if(i == idx) continue;
+        if(S[i].y == y && S[i].x == x) return true;
+    }
+    return false;
+}
+void moveSanta(int idx){
+    int distance = (monster.first - S[idx].y) * (monster.first - S[idx].y) + (monster.second - S[idx].x) * (monster.second - S[idx].x);
+    int ny = S[idx].y, nx = S[idx].x, ndir = S[idx].dir;            //
+
+    for(int dir = 0; dir < 8; dir = dir + 2){
+        int yy = S[idx].y + ddy[dir];
+        int xx = S[idx].x + ddx[dir];
+        if(yy < 1 || yy > n || xx < 1 || xx > n) continue;
+        if(checkIsIn(idx, yy, xx)) continue;
+        int d = (monster.first - yy) * (monster.first - yy) + (monster.second - xx) * (monster.second - xx);
+        if(distance > d){
+            distance = d;
+            ny = yy;
+            nx = xx;
+            ndir = dir;
+        }
+    }
+    S[idx].y = ny;  S[idx].x = nx;  S[idx].dir = ndir;
 }
 
 
-
-void interaction(int target, int y, int x, int dir){
-    santaToArr();
-    //cout << "상호작용 전\n";
-    //showArr();
-
-    arr[ry][rx] = 0;
-    int pre = target;
-    for(int len = 0; len < n; ++len){
-
-        int yy = y + len * ddy[dir];
-        int xx = x + len * ddx[dir];
-        if(yy < 1 || yy > n || xx < 1 || xx > n){
-            S[pre].died = 1;
-            break;
-        }
-        if(arr[yy][xx] == 0){
-            arr[yy][xx] = pre;
-            break;
-        }
-        else{
-            int next = arr[yy][xx];
-            arr[yy][xx] = pre;
-            pre = next;
-        }
-
-    }    
-    arrToSanta();
-    //cout << "상호작용 후\n";
-    //showArr();
+int checkConflict(){
+    for(int idx = 1; idx <= p; idx++){
+        if(S[idx].died == 1) continue;
+        if(S[idx].y == monster.first && S[idx].x == monster.second) return idx;
+    }
+    return 0;
 }
 
-void conflict(int target, int point, int dir){
-    //cout << "충돌\n";
-    //showSanta();
-    santaToArr();
+bool canEnd(){
+    for(int i = 1; i <= p; i++)
+        if(S[i].died == 0) return false;
+    return true;
+}
 
-    S[target].point += point;
+void interaction(int idx, int dir, int i, int j){
+    int cy = i, cx = j;
+    int val = arr[i][j];
+    int next_val = 0;
+    while(true){
+        int ny = cy + ddy[dir];
+        int nx = cx + ddx[dir];
+        if(ny < 1 | ny > n || nx < 1 || nx > n){
+            S[val].died = 1;
+            break;
+        }
+        else if(arr[ny][nx] == 0){
+            arr[ny][nx] = val;
+            break;
+        }
+        else if(arr[ny][nx] > 0){
+            next_val = arr[ny][nx];
+            arr[ny][nx] = val;
+        }
+        cy = ny;
+        cx = nx;
+        val = next_val;
+    }
 
-    int yy = S[target].y + point * ddy[dir];
-    int xx = S[target].x + point * ddx[dir];
+    arr[i][j] = idx;
+}
 
-    if(yy < 1 || yy > n || xx < 1 || xx > n){
-        arr[S[target].y][S[target].x] = 0;
-        S[target].died = 1;
+void conflict(int idx, int point, int dir){
+    S[idx].point += point;
+    S[idx].stun = 2;
+    int ny = S[idx].y + point * ddy[dir];
+    int nx = S[idx].x + point * ddx[dir];
+    if(ny < 1 || ny > n || nx < 1 || nx > n){
+        S[idx].died = 1;
+        arr[S[idx].y][S[idx].x] = 0;
         return;
     }
-
-    if(isThere(target, yy, xx)){
-        interaction(target, yy, xx, dir);
+    else if(arr[ny][nx] == 0){
+        arr[ny][nx] = idx;
+        arr[S[idx].y][S[idx].x] = 0;
     }
-    else{
-        arr[S[target].y][S[target].x] = 0;
-        S[target].y = yy;
-        S[target].x = xx;
+    else if(arr[ny][nx] > 0){
+        interaction(idx, dir, ny, nx);
+        arr[S[idx].y][S[idx].x] = 0;
     }
-    S[target].stop = 2;
 }
 
-void decreaseStop(){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died == 1) continue;
-        if(S[idx].stop > 0)
-            S[idx].stop--;
+void decreaseStun(){
+    for(int i = 1; i <= p; i++){
+        if(S[i].died == 1) continue;
+        if(S[i].stun > 0)
+            S[i].stun--;
     }
 }
 
 void increasePoint(){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died == 1) continue;
-        S[idx].point++;
+    for(int i = 1; i <= p; i++){
+        if(S[i].died == 1) continue;
+        S[i].point++;
     }
 }
 
 int main() {
-    // Please write your code here.
+    // 여기에 코드를 작성해주세요.
 
-    int T = 1;
-    for(int test_case = 1; test_case <= T; ++test_case){
-        // global_init();
+    cin >> n >> m >> p >> c >> d;           // 1 - indexed
+    cin >> monster.first >> monster.second;
+    for(int i = 1; i <= p; i++){    
+        int idx;
+        cin >> idx;
+        cin >> S[idx].y >> S[idx].x;
+    }
 
-        cin >> n >> m >> p >> c >> d;
-        cin >> ry >> rx;
-        for(int i = 1; i <= p; ++i){
-            int idx;
-            cin >> idx;
-            cin >> S[idx].y >> S[idx].x;
+    for(int t = 1; t <= m; t++){
+        monsterMove();
+
+        int flag = checkConflict();
+        if(flag > 0){
+            moveToArr();
+            conflict(flag, c, monsterDir);
+            moveToVec();
+        }
+        for(int idx = 1; idx <= p; idx++){
+            if(S[idx].died == 1) continue;
+            if(S[idx].stun > 0) continue;
+            moveSanta(idx);
+            flag = checkConflict();
+            if(flag > 0){
+                moveToArr();
+                conflict(flag, d, (S[idx].dir + 4) % 8);
+                moveToVec();
+            }
         }
 
-        for(int run = 1; run <= m; ++run){
+        decreaseStun();
 
-            santaToArr();
-            //showArr();
+        if(canEnd())
+            break;
 
-            if(canBreak()){
-                break;
-            }
+        increasePoint();
+    }
 
-            rMove();
- 
-            int target = checkConflict();
-            if(target > 0){
-                conflict(target, c, rdir);
-            }
-
-
-            for(int idx = 1; idx <= p; ++idx){
-                if(S[idx].died == 1) continue;
-                if(S[idx].stop > 0) continue;
-
-                sMove(idx);
-                target = checkConflict();
-                if(target > 0){
-                    conflict(target, d, (S[target].dir + 4) % 8);
-                }
-
-            }
-
-            decreaseStop();
-
-            increasePoint();
-            // 움직임 다 끝나고 받아와야할 듯?
-        }
-
-        for(int i = 1; i <= p; ++i){
-            cout << S[i].point << ' ';
-        }
-        cout << '\n';
+    for(int idx = 1; idx <= p; idx++){
+        cout << S[idx].point << ' ';
     }
     return 0;
 }
