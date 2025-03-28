@@ -76,7 +76,7 @@ void monsterMove(){
     monster.first = ny;     monster.second = nx;    monsterDir = ndir;
 }
 
-bool checkIsIn(int idx, int y, int x){
+bool isThere(int idx, int y, int x){
     for(int i = 1; i <= p; i++){
         if(S[i].died == 1) continue;
         if(i == idx) continue;
@@ -92,7 +92,7 @@ void moveSanta(int idx){
         int yy = S[idx].y + ddy[dir];
         int xx = S[idx].x + ddx[dir];
         if(yy < 1 || yy > n || xx < 1 || xx > n) continue;
-        if(checkIsIn(idx, yy, xx)) continue;
+        if(isThere(idx, yy, xx)) continue;
         int d = (monster.first - yy) * (monster.first - yy) + (monster.second - xx) * (monster.second - xx);
         if(distance > d){
             distance = d;
@@ -103,7 +103,6 @@ void moveSanta(int idx){
     }
     S[idx].y = ny;  S[idx].x = nx;  S[idx].dir = ndir;
 }
-
 
 int checkConflict(){
     for(int idx = 1; idx <= p; idx++){
@@ -148,7 +147,7 @@ void interaction(int idx, int dir, int i, int j){
 
 void conflict(int idx, int point, int dir){
     S[idx].point += point;
-    S[idx].stun = 2;
+    
     int ny = S[idx].y + point * ddy[dir];
     int nx = S[idx].x + point * ddx[dir];
     if(ny < 1 || ny > n || nx < 1 || nx > n){
@@ -164,6 +163,8 @@ void conflict(int idx, int point, int dir){
         interaction(idx, dir, ny, nx);
         arr[S[idx].y][S[idx].x] = 0;
     }
+
+    S[idx].stun = 2;
 }
 
 void decreaseStun(){
