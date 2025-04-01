@@ -199,7 +199,7 @@ int main() {
 
             findPos();
 
-            arrToTest();
+            //arrToTest();
 
             rotation(rr, ry, rx);
 
