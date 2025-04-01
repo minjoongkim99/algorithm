@@ -195,11 +195,11 @@ int main() {
             // local_init();
             nval = ans = rr = ry = rx = 0;
 
-            arrToTest();
+            //arrToTest();
 
             findPos();
 
-            //arrToTest();
+            arrToTest();
 
             rotation(rr, ry, rx);
 
