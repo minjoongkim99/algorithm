@@ -19,15 +19,6 @@ queue<int> wall;
 
 int ans = 0;
 
-void showTest(){
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
-            cout << test[i][j] << ' ';
-        }
-        cout << '\n';
-    }
-}
-
 void arrToTest(){
     for(int i = 0; i < 5; ++i)
         for(int j = 0; j < 5; ++j)
@@ -98,8 +89,6 @@ int rotation(int rotate, int y, int x){
     return cnt;
 }   
 
-//회전 목표: 1차가치 극대화, 각도 작, 열 작 행, 작
-//유물 1차 획득: 서로 연결. 3개 이상 연결 되어 있으면 사라진다. 0이 된다
 void findPos(){
    
     for(int rotate = 1; rotate <= 3; ++rotate){
@@ -188,19 +177,6 @@ int removeItem(){
 
 int main() {
 
-    /*
-        5*5 격자 내에 3 * 3 배열 회전 arr[][] val은 7이하 자연수
-        회전 목표: 1차가치 극대화, 각도 작, 열 작 행, 작
-
-        유물 1차 획득: 서로 연결. 3개 이상 연결 되어 있으면 사라진다. 0이 된다
-
-        벽면으로부터 숫자를 받아온다. 열 작 행 큰 순으로 채워진다.
-
-        연쇄 획득: 채워지고 나서 3개 이상 일 수 있음. 없을 때까지 계속
-
-        ---- 이게 1턴, k턴 반복. 없으면 즉시 종료
-
-    */
     int T = 1;
 
     for(int test_case = 1; test_case <= T; ++test_case){
@@ -219,29 +195,20 @@ int main() {
             // local_init();
             nval = ans = rr = ry = rx = 0;
 
-            // test <- arr
             arrToTest();
 
-            // 회전 목표에 부합하는 회전 개수와 좌표 찾기.
             findPos();
-            //cout << "CNT:" << nval << " ROT" << rr << " " << ry << "," << rx << '\n';
 
-
-            // 1차 획득 시키기.
             arrToTest();
+
             rotation(rr, ry, rx);
 
             int breakPoint = removeItem();
             if(breakPoint == 0)
                 break;
-            //showTest();
-            //cout << "ANS " << ans << "\n";
-            // 채우기
-            fillNewData();
-            //cout << "AFTER FILL\n";
-            //showTest();
 
-            // 연쇄 획득 여부 찾기
+            fillNewData();
+
             while(true){
                 fill(&visited[0][0], &visited[0][0] + 5 * 5, 0);
                 int flag = removeItem();
@@ -249,11 +216,8 @@ int main() {
                 else fillNewData();
             }
 
-
-            // arr <- test;
             testToArr();
 
-            // 출력.
             cout << ans << ' ';
         }
     }
