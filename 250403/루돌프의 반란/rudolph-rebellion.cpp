@@ -112,10 +112,12 @@ void interaction(int idx, int y, int x, int dir){
             S[pre].died = 1;
             break;
         }
+        ///////////////////////////////////////////////
         if(santa_map[yy][xx] == 0){
             santa_map[yy][xx] = pre;
             break;
         }
+        ///////////////////////////////////////////////
         int nxt = santa_map[yy][xx];
         santa_map[yy][xx] = pre;
         pre = nxt;
@@ -224,7 +226,6 @@ int main() {
         input();
 
         for(int run = 1; run <= m; ++run){
-            fill(&santa_map[0][0], &santa_map[0][0] + 55 * 55, 0);
 
             if(canBreak())
                 break;
