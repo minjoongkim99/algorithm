@@ -14,17 +14,6 @@ struct santa{
 santa S[32];
 int santa_map[55][55];
 
-void showR(){
-    cout << ry << "," << rx << " DIR:" << rdir << '\n';
-}
-
-void showSanta(){
-    for(int idx = 1; idx <= p; ++idx){
-        if(S[idx].died) cout << "IDX" << idx << " IS DIED\n";
-        else cout << "IDX:" << idx << " " << S[idx].y << " " << S[idx].x << "\n";
-    }
-}
-
 int getDistance(int y1, int x1, int y2, int x2){
     return (y1 - y2) * (y1 - y2) + (x1 - x2) * (x1 - x2);
 }
@@ -45,9 +34,6 @@ int checkConflict(){
     return 0;
 }
 
-//루돌프의 움직임.
-//거리 가장 가까운 산타(단 탈락하지 않은)
-//거 같, 행큰, 열큰으로. 8방향으로 이동 가능하며, 우선순위가 높은 산타를 향해 가장 가까워지는 방향.
 void rMove(){
     int ny = ry, nx = rx, ndir = rdir;
     int target = 0;
@@ -78,8 +64,8 @@ void rMove(){
         }
     }
 
-    //cout << "TAGET:" << target << '\n';
     cur_dist = getDistance(ry, rx, S[target].y, S[target].x);
+
     for(int dir = 0; dir < 8; ++dir){
         int yy = ry + ddy[dir];
         int xx = rx + ddx[dir];
@@ -95,7 +81,6 @@ void rMove(){
     
     ry = ny, rx = nx, rdir = ndir;
 }
-
 
 void makeSantaMap(){
     fill(&santa_map[0][0], &santa_map[0][0] + 55 * 55, 0);
@@ -127,19 +112,16 @@ void interaction(int idx, int y, int x, int dir){
             S[pre].died = 1;
             break;
         }
+        if(santa_map[yy][xx] == 0){
+            santa_map[yy][xx] = pre;
+            break;
+        }
         int nxt = santa_map[yy][xx];
         santa_map[yy][xx] = pre;
         pre = nxt;
     }
 }
-/*
-충돌.
-산타와 루돌프가 같은 칸이면 충돌 발생
-루돌프가 충돌을 일으키면 C만큼 산타가 점수를 얻고, C만큼 밀려남
-산타가 충돌을 일으킨다면 D만큼 산타가 점수를 얻고, D만큼 반대방향으로 밀려남
-포물선 충돌
-OOB이면 탈락
-밀려난 칸에 누가 있으면 상호작용 발생*/
+
 void conflict(int idx, int point, int dir){
     S[idx].point += point;
 
@@ -164,20 +146,10 @@ void conflict(int idx, int point, int dir){
     updateSantaPos();
 }
 
-/*
-산타 움직임.
-1~P. 순서대로 움직인다.
-기절하거나 탈락하면 움직이지 않음.
-루돌프에게 가장 가까워지는 방향으로 1칸 이동
-다른 산타가 있거나, 게임판 밖으로는 이동이 불가하다.
-움직일 수 없다면 움직이지 않는다.
-루돌프와 가까워 지지않으면 움직이지 않는다.
-산타는 4방향 dydx이고 상우하좌.*/
 bool isIn(int idx, int y, int x){
     for(int i = 1; i <= p; ++i){
         if(S[i].died == 1 || i == idx) continue;
         if(S[i].y == y && S[i].x == x){
-            //cout << "TTTTTTT\n";
             return true;
         }
     }
@@ -204,7 +176,6 @@ void moveSanta(int idx){
     }
 
     S[idx].y = ny, S[idx].x = nx, S[idx].dir = ndir;
-    //cout << "IDX" << idx << " NEXT POS:" << S[idx].y << "," << S[idx].x << '\n';
 }
 
 void moveSantas(){
@@ -213,7 +184,6 @@ void moveSantas(){
         moveSanta(idx);
         int flag = checkConflict();
         if(flag > 0){
-            //cout << flag << "BY 산타\n";
             conflict(idx, d, (S[idx].dir + 4) % 8);
         }
     }
@@ -255,7 +225,7 @@ int main() {
 
         for(int run = 1; run <= m; ++run){
             fill(&santa_map[0][0], &santa_map[0][0] + 55 * 55, 0);
-            
+
             if(canBreak())
                 break;
 
