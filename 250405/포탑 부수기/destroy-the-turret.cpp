@@ -131,6 +131,12 @@ void bfs(){
             int yy = (y + dy[dir] + n) % n;
             int xx = (x + dx[dir] + m) % m;
 
+            /*
+            1 - indexed OOB를 격자내로 다시 들어오게.
+            yy = (((y + dy[dir] + n) - 1) % n) + 1;
+			xx = (((x + dx[dir] + m) - 1) % m) + 1;
+            */
+
             if(visited[yy][xx]) continue;
             if(power[yy][xx] <= 0) continue;
 
@@ -206,6 +212,11 @@ void getAnswer(){
     }
 }
 
+ /*
+            1 - indexed OOB를 격자내로 다시 들어오게.
+            yy = (((y + dy[dir] + n) - 1) % n) + 1;
+			xx = (((x + dx[dir] + m) - 1) % m) + 1;
+*/
 int main() {
     // Please write your code here.
     int T = 1;
