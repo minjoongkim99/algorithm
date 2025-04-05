@@ -128,19 +128,12 @@ void bfs(){
         q.pop();
 
         for(int dir = 0; dir < 4; ++dir){
-            int yy = y + dy[dir];
-            int xx = x + dx[dir];
-
-            if(yy < 0 || yy >= n){
-                yy = (yy + n) % n;
-            }
-            if(xx < 0 || xx >= m){
-                xx = (xx + m) % m;
-            }
+            int yy = (y + dy[dir] + n) % n;
+            int xx = (x + dx[dir] + m) % m;
 
             if(visited[yy][xx]) continue;
             if(power[yy][xx] <= 0) continue;
-            
+
             q.push({yy, xx});
             visited[yy][xx] = visited[y][x] + 1;
             pre[yy][xx][0] = y;
@@ -183,15 +176,8 @@ void potan(){
     attacked[ay][ax] = 1;                   //////////////////////////
 
     for(int dir = 0; dir < 8; ++dir){
-        int yy = ty + ddy[dir];
-        int xx = tx + ddx[dir];
-
-        if(yy < 0 || yy >= n){
-            yy = (yy + n) % n;
-        }
-        if(xx < 0 || xx >= m){
-            xx = (xx + m) % m;
-        }
+        int yy = (ty + ddy[dir] + n) % n;
+        int xx = (tx + ddx[dir] + m) % m; 
         
         if(yy == ay && xx == ax) continue;
 
