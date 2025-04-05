@@ -131,17 +131,16 @@ void bfs(){
             int yy = y + dy[dir];
             int xx = x + dx[dir];
 
-            if(yy < 0)
-                yy = n + yy;
-            else if(yy >= n)
-                yy = yy % n;
-            if(xx < 0)
-                xx = m + xx;
-            else if(xx >= m)
-                xx = xx % m;
+            if(yy < 0 || yy >= n){
+                yy = (yy + n) % n;
+            }
+            if(xx < 0 || xx >= m){
+                xx = (xx + m) % m;
+            }
 
             if(visited[yy][xx]) continue;
             if(power[yy][xx] <= 0) continue;
+            
             q.push({yy, xx});
             visited[yy][xx] = visited[y][x] + 1;
             pre[yy][xx][0] = y;
@@ -149,7 +148,6 @@ void bfs(){
 
         }
     }
-
 }
 
 void razer(){
