@@ -97,6 +97,17 @@ void removeBomb(){
     point += cnt * cnt;
 }
 
+/*
+    총합 큰, 빨갱색 적은, 행 큰, 열 작 순으로
+    행 큰, 열 작은 for문 조작으로 코드를 매우 간결하게 줄일 수 있음. (단, 행 + 열 이런건 안된다... 반례랑 이전 문제)
+    반례: 포탑 부수기 문제.
+
+    fill(&vistied[0][0], , 0);은 언제 해야하는가에 대해 항상 생각을 해야함.
+
+    bfs()문에 다양한 format.
+    bfs(i, j)로 param을 전달할 수 있고, (시작점을 전달한다는 의미임)
+    bfs()가 void형이 아닌 int형이나 pair<int,int> 형 등 필요한 정보를 반환 받을 수 있게 해야함.
+*/
 void findTarget(){
     ncnt = nred = ny = nx = 0;
 
@@ -125,11 +136,26 @@ void findTarget(){
     }
 }
 
+/*
+    중력함수. 현재는 아랫방향으로 떨어진다.
+    윗방향 우측방향 좌측방향에 대한 중력도 생각할 줄 알아야함.
+    
+    무조건적인 중력이 아님
+    왜? 돌(-1)은 중력의 영향을 받지 않는다...
+
+    중력 함수. for(j)   -> for(i) -> for(k 는 i 영향 받음)
+    중력 조건을 받으려면 현재 탐색 구간[i][j]가 비어있어야한다. EMPTY 상태가 아니면 중력 불가 칸 (continue;)
+    중력 조건을 받는 EMPTY라면 for(k 문으로) 탐색 시작.
+    [k][j]가 EMPTY라면 중력으로 내릴게 없으므로 (continue);
+    [k][j]가 제약조건(STOP)이라면 해당 [i][j]칸에 대한 추가적인 중력탐색이 필요가 없음. 떨어지지 않는다... break;
+    [k][j]가 VALUE를 가지고 있다면, [i][j] <- [k][j] 처리하고, [k][j]를 EMPTY 상태로 만들어야한다.
+*/
 void gravity(){
 
     for(int j = 0; j < n; ++j){
         for(int i = n - 1; i >= 0; --i){
             if(arr[i][j] != -2) continue;
+
             for(int k = i - 1; k >= 0; --k){
                 if(arr[k][j] == -2){
                     continue;
@@ -145,7 +171,6 @@ void gravity(){
             }
         }
     }
-    
 }
 
 void rotate_left(){
