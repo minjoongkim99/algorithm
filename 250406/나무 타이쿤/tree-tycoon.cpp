@@ -16,32 +16,6 @@ vector<pair<int, int>> order;
 
 int sum = 0;
 
-void showArr() {
-	for (int i = 1; i <= n; ++i) {
-		for (int j = 1; j <= n; ++j) {
-			cout << arr[i][j] << '\t';
-		}
-		cout << "\n";
-	}
-	cout << "\n";
-}
-
-void showVisited() {
-	for (int i = 1; i <= n; ++i) {
-		for (int j = 1; j <= n; ++j) {
-			cout << visited[i][j] << '\t';
-		}
-		cout << "\n";
-	}
-	cout << "\n";
-}
-
-void showFood() {
-	for (int i = 0; i < food.size(); ++i) {
-		cout << food[i].first << ',' << food[i].second << '\n';
-	}
-}
-
 // *1. 특수 영양제 이동 규칙에 따라 이동 시킴
 void moveFood(int t) {
 	int d = order[t].first;
@@ -147,40 +121,19 @@ int main() {
 
 		for (int run = 1; run <= m; ++run) {
 			fill(&visited[0][0], &visited[0][0] + 20 * 20, 0);
-			//food.clear();
-			//cout << "DIR" << order[run - 1].first << " LEN" << order[run - 1].second << '\n';
-			//cout << "INIT\n";
-			//showFood();
 
 			moveFood(run - 1);
 
-			//cout << "BEFORE\n";
-			//showFood();
-			//cout << "==\n";
-
 			disappearFood();
-
-			//showVisited();
-
-			//showArr();
 
 			increaseArr();
 
-			//showArr();
-
 			cutting();
-
-			//showArr();
-
-			//cout << "AFTER\n";
-			//showFood();
 		}
 
 		getAnswer();
 
 		cout << sum << '\n';
-
-		//cout << "====================\n";
 	}
 	return 0;
 }
