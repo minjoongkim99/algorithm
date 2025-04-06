@@ -14,16 +14,6 @@ int ncnt, nred, ny, nx;
 
 int point = 0;
 
-void showArr(){
-    for(int i = 0; i < n; ++i){
-        for(int j = 0; j < n; ++j){
-            cout << arr[i][j] << '\t';
-        }
-        cout << '\n';
-    }
-    cout << '\n';
-}
-
 void redInit(){
     for(int i = 0; i < n; ++i){
         for(int j = 0; j < n; ++j){
@@ -107,11 +97,6 @@ void removeBomb(){
     point += cnt * cnt;
 }
 
-/*
-1. 가장 크기가 큰 폭탄묶음(2개 이상이며 모두 같은 색깔이거나 빨간색 폭탄 포함한 것)
-폭탄묶음은 연결되어이있어야하고, 빨간색 폭탄으로만은 아님..
-가장 큰 폭탄 묶음이며, 같다면 빨간색이 가장 적은 것
-빨간색이 같다면, 기준점 행큰, 기준점 열 작*/
 void findTarget(){
     ncnt = nred = ny = nx = 0;
 
@@ -193,6 +178,7 @@ int main() {
         //global_init();
         input();
         int t = 1;
+        
         while(true){
             ncnt = nred = ny = nx = 0;
             fill(&visited[0][0], &visited[0][0] + 25 * 25, 0);
@@ -201,32 +187,21 @@ int main() {
 
             // 1. 가장 크기가 큰 폭탄 묶음 찾기.
             findTarget();
-            //cout << ncnt << " " << nred << " " << ny << " " << nx << "!\n";
+
             if(ncnt < 2)
                 break;
 
             fill(&visited[0][0], &visited[0][0] + 25 * 25, 0);
             removeBomb();
-            
-            //showArr();
 
             // 2. 중력 작용.
-            
             gravity();
-            //cout << "GRAVITY1\n";
-            //showArr();
 
             // 3. 반시계 방향 회전
             rotate_left();
-            //cout << "ROTATE_LEFT\n";
-            //showArr();
 
             // 4. 중력 작용
             gravity();
-            //cout << "GRAVITY2\n";
-            //showArr();
-        
-            t++;
         }
 
         cout << point << '\n';
