@@ -1,4 +1,10 @@
 #include <iostream>
+using namespace std;
+
+int main() {
+    // Please write your code here.
+    return 0;
+}#include <iostream>
 #include <algorithm>
 #include <vector>
 using namespace std;
@@ -52,6 +58,8 @@ void attack(int dir, int len) {
 }
 
 void snailEmpty() {
+	v.clear();
+
 	int cy = n / 2, cx = n / 2;
 	int dir = 2;
 	int flag = 0;
@@ -172,7 +180,7 @@ void vecToArr() {
 
 int main() {
 	int T = 1;
-	//cin >> T;
+	cin >> T;
 	
 	for (int tc = 1; tc <= T; ++tc) {
 		//global_init();
