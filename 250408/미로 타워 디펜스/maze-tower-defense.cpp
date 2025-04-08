@@ -149,7 +149,7 @@ void vecToArr() {
 		int nx = cx + dx[dir];
 		//cout << ny << "and" << nx << "!\n";
 
-		if (ny < 0 || ny >= n || nx < 1 || nx >= n) break;
+		if (ny < 0 || ny >= n || nx < 0 || nx >= n) break;
 		arr[ny][nx] = v[i];
 
 		cur++;
