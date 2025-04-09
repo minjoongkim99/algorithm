@@ -489,4 +489,5 @@ n*n 격자.  1- indexed
 /*
 3. 외벽인 칸들은 시원함이 1씩 감소한다.
 단 0이면 더이상 감소하지 안흔다
-*https://www.codetree.ai/frequent-problems/problems/cooling-system/description$0/
+*/
+
