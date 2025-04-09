@@ -162,7 +162,7 @@ void entering(int idx) {
 
 int main() {
 	int T = 1;
-	cin >> T; 
+	//cin >> T; 
 	
 	for (int tc = 1; tc <= T; ++tc) {
 		// global_init();
