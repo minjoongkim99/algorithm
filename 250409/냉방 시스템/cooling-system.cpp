@@ -258,7 +258,7 @@ void diffuseDown(int i, int j) {
 		if (x4 >= 1 && x4 <= n && y4 >= 1 && y4 <= n) {
 			if (wall[x][y][1] == 0) {
 				if (x5 >= 1 && x5 <= n && y5 >= 1 && y5 <= n) {
-					if (wall[x5][y5][1] == 0 && visited[x][y] > 1) {
+					if (wall[x5][y5][0] == 0 && visited[x][y] > 1) {
 						q.push({ x5, y5 });
 						visited[x5][y5] = visited[x][y] - 1;
 					}
@@ -489,4 +489,4 @@ n*n 격자.  1- indexed
 /*
 3. 외벽인 칸들은 시원함이 1씩 감소한다.
 단 0이면 더이상 감소하지 안흔다
-*/
+*https://www.codetree.ai/frequent-problems/problems/cooling-system/description$0/
