@@ -33,8 +33,6 @@ void diffuseUp(int i, int j) {
 
 	int cx = i + dx[0];
 	int cy = j + dy[0];
-	if (cx < 1 || cx > n || cy < 1 || cy > n) return;
-	if (wall[i][j][0] == 1) return;
 
 	q.push({ cx, cy });
 	visited[cx][cy] = 5;
@@ -93,8 +91,6 @@ void diffuseLeft(int i, int j) {
 
 	int cx = i + dx[1];
 	int cy = j + dy[1];
-	if (cx < 1 || cx > n || cy < 1 || cy > n) return;
-	if (wall[i][j][1] == 1) return;
 
 	q.push({ cx, cy });
 	visited[cx][cy] = 5;
@@ -153,8 +149,7 @@ void diffuseRight(int i, int j) {
 
 	int cx = i + dx[3];
 	int cy = j + dy[3];
-	if (cx < 1 || cx > n || cy < 1 || cy > n) return;
-	if (wall[cx][cy][1] == 1) return;
+	
 
 	q.push({ cx, cy });
 	visited[cx][cy] = 5;
@@ -213,8 +208,6 @@ void diffuseDown(int i, int j) {
 
 	int cx = i + dx[2];
 	int cy = j + dy[2];
-	if (cx < 1 || cx > n || cy < 1 || cy > n) return;
-	if (wall[cx][cy][1] == 1) return;
 
 	q.push({ cx, cy });
 	visited[cx][cy] = 5;
@@ -460,34 +453,3 @@ int main() {
 	}
 	return 0;
 }
-
-/*
-n*n 격자.  1- indexed
-0 빈공간, 1 사무실 구역, 2 에어컨(왼), 3 에어컨(위), 4 에어컨(오), 5 에어컨(아래)
-4가지 과정을 진행한다
-*/
-
-/*
-1. 바람이 나와서 공기를 만든다. 퍼져나간다. (이등변 삼각형)
-오른쪽일 경우. 위쪽 45도와 아랫쪽 45도 그리고 오른쪽. 가는길에 벽이 있으면 전파 stop
-오른쪽에서 오른쪽은 벽 하나만 체크
-아래45, 위 45도는 벽 두개 체크
-
-시원함의 전파는 합산이다.
-*/
-
-/*
-시원함의 합산.
-*/
-
-/*
-2. 공기의 섞임.
-서로 인접한 칸들에 대하여 높은 곳에서 낮은 곳으로 (시원함의 차이 / 4) 만큼 전파 된다.
-벽을 사이에 두고 있는 칸들은 일어나지 않음에 유의
-*/
-
-/*
-3. 외벽인 칸들은 시원함이 1씩 감소한다.
-단 0이면 더이상 감소하지 안흔다
-*/
-
