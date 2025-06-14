@@ -136,16 +136,14 @@ void winnerMove() {
 }
 
 int main() {
-	
 	int T = 1;
-	// cin >> T;
 
 	for (int tc = 1; tc <= T; ++tc) {
 		// init();
 		input();
 
 		for (int run = 1; run <= k; ++run) {
-			//cout << "RUN" << run << "\n";
+
 			for (int idx = 1; idx <= m; ++idx) {
 
 				movePlayer(idx);
@@ -159,14 +157,9 @@ int main() {
 				}
 				else {
 					battle(idx, flag);
-					//cout << "LOSER:" << loser << " WINNER:" << winner << "\n";
 					loserMove();
 					winnerMove();
 				}
-
-				//showPlayerPos();
-
-				//cout << "--------------------------\n";
 			}
 		}
 
